@@ -1,4 +1,4 @@
-# Compasso Livre
+# Compasso Livre - Grupo 5
 
 Portal de Educação Musical Inclusiva — projeto avaliativo do curso de Sistemas de Informação (6º semestre, 2026).
 
