@@ -18,7 +18,7 @@ O Compasso Livre é um sistema que atua como elo entre professor de música, pro
 
 - **Backend:** Laravel (arquitetura MVC)
 - **Frontend:** Bootstrap (última versão) + jQuery
-- **Banco de dados:** SQLite
+- **Banco de dados:** MySQL
 
 ## Como rodar o projeto localmente
 
