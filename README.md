@@ -7,13 +7,13 @@ Crianças em acompanhamento de desenvolvimento da fala (atraso de fala, trocas f
 entre outros) costumam ser atendidas por um fonoaudiólogo que trabalha isolado da escola, do pediatra e 
 de outros especialistas envolvidos no caso, porque: 
 
-Não há canal estruturado para o fonoaudiólogo compartilhar o plano terapêutico com pediatra e 
+- Não há canal estruturado para o fonoaudiólogo compartilhar o plano terapêutico com pediatra e 
 terapeuta ocupacional que acompanham a mesma criança;
 
-Falta material padronizado de estimulação da fala que os pais possam reproduzir corretamente em 
+- Falta material padronizado de estimulação da fala que os pais possam reproduzir corretamente em 
 casa (hoje isso costuma ser passado em papel avulso ou verbalmente); 
 
-O acompanhamento do progresso da criança é feito de forma informal (anotações soltas), sem 
+- O acompanhamento do progresso da criança é feito de forma informal (anotações soltas), sem 
 histórico estruturado que ajude a ajustar a terapia ao longo do tempo;
 ## Funcionalidades (v1)
 - Cadastro de crianças com Plano Terapêutico Fonoaudiológico
