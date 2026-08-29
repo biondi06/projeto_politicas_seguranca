@@ -10,12 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('plano_exercicios', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('plano_exercicios', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('plano_id')->constrained('plano_terapeuticos')->cascadeOnDelete();
+        $table->foreignId('exercicio_id')->constrained('exercicios')->cascadeOnDelete();
+        $table->date('data_atribuicao');
+        $table->text('observacao_profissional')->nullable();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

@@ -10,12 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('arquivo_videos', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('arquivo_videos', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('plano_exercicio_id')->constrained('plano_exercicios')->cascadeOnDelete();
+        $table->string('titulo');
+        $table->string('arquivo_url');
+        $table->integer('duracao_segundos');
+        $table->date('data_upload');
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

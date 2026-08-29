@@ -10,12 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('responsavel_legals', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('responsavel_legals', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete();
+        $table->string('nome');
+        $table->string('contato');
+        $table->string('email');
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
