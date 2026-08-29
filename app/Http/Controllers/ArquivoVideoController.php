@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MaterialAdaptado;
+use App\Models\ArquivoVideo;
 use Illuminate\Http\Request;
 
-class MaterialAdaptadoController extends Controller
+class ArquivoVideoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class MaterialAdaptadoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MaterialAdaptado $materialAdaptado)
+    public function show(ArquivoVideo $arquivoVideo)
     {
         //
     }
@@ -42,7 +42,7 @@ class MaterialAdaptadoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(MaterialAdaptado $materialAdaptado)
+    public function edit(ArquivoVideo $arquivoVideo)
     {
         //
     }
@@ -50,7 +50,7 @@ class MaterialAdaptadoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, MaterialAdaptado $materialAdaptado)
+    public function update(Request $request, ArquivoVideo $arquivoVideo)
     {
         //
     }
@@ -58,7 +58,7 @@ class MaterialAdaptadoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(MaterialAdaptado $materialAdaptado)
+    public function destroy(ArquivoVideo $arquivoVideo)
     {
         //
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plano_de_aulas', function (Blueprint $table) {
+        Schema::create('responsavel_legals', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plano_de_aulas');
+        Schema::dropIfExists('responsavel_legals');
     }
 };

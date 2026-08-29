@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Turma;
+use App\Models\Crianca;
 use Illuminate\Http\Request;
 
-class TurmaController extends Controller
+class CriancaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class TurmaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Turma $turma)
+    public function show(Crianca $crianca)
     {
         //
     }
@@ -42,7 +42,7 @@ class TurmaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Turma $turma)
+    public function edit(Crianca $crianca)
     {
         //
     }
@@ -50,7 +50,7 @@ class TurmaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Turma $turma)
+    public function update(Request $request, Crianca $crianca)
     {
         //
     }
@@ -58,7 +58,7 @@ class TurmaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Turma $turma)
+    public function destroy(Crianca $crianca)
     {
         //
     }

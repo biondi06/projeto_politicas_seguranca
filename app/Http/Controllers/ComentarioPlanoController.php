@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PlanoDeAula;
+use App\Models\ComentarioPlano;
 use Illuminate\Http\Request;
 
-class PlanoDeAulaController extends Controller
+class ComentarioPlanoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class PlanoDeAulaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PlanoDeAula $planoDeAula)
+    public function show(ComentarioPlano $comentarioPlano)
     {
         //
     }
@@ -42,7 +42,7 @@ class PlanoDeAulaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PlanoDeAula $planoDeAula)
+    public function edit(ComentarioPlano $comentarioPlano)
     {
         //
     }
@@ -50,7 +50,7 @@ class PlanoDeAulaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PlanoDeAula $planoDeAula)
+    public function update(Request $request, ComentarioPlano $comentarioPlano)
     {
         //
     }
@@ -58,7 +58,7 @@ class PlanoDeAulaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PlanoDeAula $planoDeAula)
+    public function destroy(ComentarioPlano $comentarioPlano)
     {
         //
     }

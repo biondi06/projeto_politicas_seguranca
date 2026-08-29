@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PeiMusical;
+use App\Models\CoordenadorClinico;
 use Illuminate\Http\Request;
 
-class PeiMusicalController extends Controller
+class CoordenadorClinicoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class PeiMusicalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PeiMusical $peiMusical)
+    public function show(CoordenadorClinico $coordenadorClinico)
     {
         //
     }
@@ -42,7 +42,7 @@ class PeiMusicalController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PeiMusical $peiMusical)
+    public function edit(CoordenadorClinico $coordenadorClinico)
     {
         //
     }
@@ -50,7 +50,7 @@ class PeiMusicalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PeiMusical $peiMusical)
+    public function update(Request $request, CoordenadorClinico $coordenadorClinico)
     {
         //
     }
@@ -58,7 +58,7 @@ class PeiMusicalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PeiMusical $peiMusical)
+    public function destroy(CoordenadorClinico $coordenadorClinico)
     {
         //
     }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Aluno;
+use App\Models\PlanoExercicio;
 use Illuminate\Http\Request;
 
-class AlunoController extends Controller
+class PlanoExercicioController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class AlunoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Aluno $aluno)
+    public function show(PlanoExercicio $planoExercicio)
     {
         //
     }
@@ -42,7 +42,7 @@ class AlunoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Aluno $aluno)
+    public function edit(PlanoExercicio $planoExercicio)
     {
         //
     }
@@ -50,7 +50,7 @@ class AlunoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Aluno $aluno)
+    public function update(Request $request, PlanoExercicio $planoExercicio)
     {
         //
     }
@@ -58,7 +58,7 @@ class AlunoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Aluno $aluno)
+    public function destroy(PlanoExercicio $planoExercicio)
     {
         //
     }

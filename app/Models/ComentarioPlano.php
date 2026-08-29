@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PeiMusical extends Model
+class ComentarioPlano extends Model
 {
     //
 }

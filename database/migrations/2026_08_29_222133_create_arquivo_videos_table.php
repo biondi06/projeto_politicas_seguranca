@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('material_adaptados', function (Blueprint $table) {
+        Schema::create('arquivo_videos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('material_adaptados');
+        Schema::dropIfExists('arquivo_videos');
     }
 };

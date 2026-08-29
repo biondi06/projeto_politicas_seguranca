@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RegistroAcompanhamento;
+use App\Models\Fonoaudiologo;
 use Illuminate\Http\Request;
 
-class RegistroAcompanhamentoController extends Controller
+class FonoaudiologoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RegistroAcompanhamentoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RegistroAcompanhamento $registroAcompanhamento)
+    public function show(Fonoaudiologo $fonoaudiologo)
     {
         //
     }
@@ -42,7 +42,7 @@ class RegistroAcompanhamentoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RegistroAcompanhamento $registroAcompanhamento)
+    public function edit(Fonoaudiologo $fonoaudiologo)
     {
         //
     }
@@ -50,7 +50,7 @@ class RegistroAcompanhamentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RegistroAcompanhamento $registroAcompanhamento)
+    public function update(Request $request, Fonoaudiologo $fonoaudiologo)
     {
         //
     }
@@ -58,7 +58,7 @@ class RegistroAcompanhamentoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RegistroAcompanhamento $registroAcompanhamento)
+    public function destroy(Fonoaudiologo $fonoaudiologo)
     {
         //
     }

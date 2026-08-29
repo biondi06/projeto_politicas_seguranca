@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('registro_acompanhamentos', function (Blueprint $table) {
+        Schema::create('plano_terapeuticos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('registro_acompanhamentos');
+        Schema::dropIfExists('plano_terapeuticos');
     }
 };
