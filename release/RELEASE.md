@@ -303,7 +303,7 @@ O diretório contém capturas relacionadas a:
 12. Configuração do Argon2id.
 13. Documentação técnico-científica.
 14. Evidências de funcionamento.
-18. Checklist do projeto.
+15. Checklist do projeto.
 
 ---
 
