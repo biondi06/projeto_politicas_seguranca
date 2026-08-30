@@ -20,10 +20,13 @@ class CreateNewUser implements CreatesNewUsers
      *
      * @throws ValidationException
      */
+
+    
     public function create(array $input): User
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
+            'perfil' => ['required', 'string', 'in:fonoaudiologo,coordenador_clinico,administrador_ti,responsavel_legal'],
             'email' => [
                 'required',
                 'string',
@@ -36,7 +39,12 @@ class CreateNewUser implements CreatesNewUsers
 
         return User::create([
             'name' => $input['name'],
+            'perfil' => $input['perfil'],
             'email' => $input['email'],
+            // A senha nunca é armazenada em texto puro.
+            // Hash::make() utiliza o algoritmo configurado pela aplicação,
+            // atualmente Argon2id, gerando um hash com salt criptográfico
+            // exclusivo para cada senha.
             'password' => Hash::make($input['password']),
         ]);
     }

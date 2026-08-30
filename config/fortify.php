@@ -160,14 +160,14 @@ return [
     | these features or you can even remove all of these if you need to.
     |
     */
-
+    
 'features' => [
-    Features::registration(),
-    Features::resetPasswords(),
+    Features::registration(),   // Permite o cadastro de novos usuários.
+    Features::resetPasswords(),  // Permite recuperação e redefinição de senha.
     // Features::emailVerification(),
-    Features::updateProfileInformation(),
-    Features::updatePasswords(),
-    Features::twoFactorAuthentication([
+    Features::updateProfileInformation(), // Permite atualização das informações do perfil.
+    Features::updatePasswords(), // Permite alteração da senha da conta.
+    Features::twoFactorAuthentication([ // Habilita a autenticação em dois fatores.
         'confirm' => true,
         'confirmPassword' => true,
     ]),

@@ -31,9 +31,12 @@ return [
     | indicate that via the expire_on_close configuration option.
     |
     */
-
-    'lifetime' => (int) env('SESSION_LIFETIME', 120),
-
+    // Define o tempo, em minutos, pelo qual a sessão pode permanecer
+    // ativa antes de expirar por inatividade.
+    'lifetime' => (int) env('SESSION_LIFETIME', 1),
+    
+    // Define se a sessão deve expirar imediatamente quando
+    // o navegador for fechado.
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 
     /*
