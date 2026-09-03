@@ -13,8 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-        'two_factor_required' => \App\Http\Middleware\EnsureTwoFactorIsEnabled::class,
-    ]);
+            'two_factor_required' => \App\Http\Middleware\EnsureTwoFactorIsEnabled::class,
+        ]);
+
+        $middleware->web(append: [
+            \App\Http\Middleware\LogPasswordResetOutcome::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -37,7 +37,7 @@
 
     <div class="topbar">
         <div class="container">
-            <a href="{{ route('home') }}">&larr; Ecoa</a>
+            <a href="{{ route('home') }}" style="display:flex;align-items:center;gap:8px;"><img src="{{ asset('img/ecoa-icone.png') }}" alt="" style="height:22px;width:auto;">&larr; Ecoa</a>
         </div>
     </div>
 

@@ -1,468 +1,578 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Ecoa</title> <!-- Google Fonts -->
+    <title>Painel — Ecoa</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-    :root {
-        --ink: #16231f;
-        --paper: #f4f6f2;
-        --paper-dim: #eceee8;
-        --teal-900: #0d3634;
-        --teal-800: #124542;
-        --teal-700: #1b5e5a;
-        --teal-600: #256f6a;
-        --amber: #c6873a;
-        --amber-soft: #e7c396;
-        --sage: #b9cfc0;
-        --white: #ffffff;
-        --line: rgba(22, 35, 31, 0.12);
-        --line-dark: rgba(244, 246, 242, 0.14);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        background: var(--paper);
-        color: var(--ink);
-        font-family: 'IBM Plex Sans', system-ui, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        line-height: 1.5;
-    }
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    button {
-        font-family: inherit;
-    }
-
-    .container {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
-    h1,
-    h2,
-    h3 {
-        font-family: 'Newsreader', Georgia, serif;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-    }
-
-    /* ========================= HEADER ========================= */
-    header {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        background: rgba(13, 54, 52, 0.96);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--line-dark);
-    }
-
-    .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px 0;
-    }
-
-    .wordmark {
-        font-family: 'Newsreader', Georgia, serif;
-        font-size: 24px;
-        font-weight: 600;
-        color: var(--paper);
-        display: flex;
-        align-items: baseline;
-        gap: 2px;
-    }
-
-    .wordmark span {
-        color: var(--amber);
-    }
-
-    .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
-
-    .user-name {
-        color: rgba(244, 246, 242, 0.85);
-        font-size: 14px;
-    }
-
-    /* ========================= LOGOUT ========================= */
-    .logout-form {
-        margin: 0;
-    }
-
-    .logout-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--amber);
-        color: #241505;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 18px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
-
-    .logout-btn:hover {
-        transform: translateY(-1px);
-        background: #d29648;
-        box-shadow: 0 8px 20px rgba(198, 135, 58, 0.25);
-    }
-
-    .logout-btn:focus-visible {
-        outline: 2px solid var(--paper);
-        outline-offset: 3px;
-    }
-
-    /* ========================= HERO ========================= */
-    .hero {
-        background: radial-gradient(720px 420px at 82% -10%, rgba(198, 135, 58, 0.16), transparent 60%), linear-gradient(180deg, var(--teal-900), #0a2b29 88%);
-        color: var(--paper);
-        padding: 78px 0 84px;
-    }
-
-    .hero-content {
-        max-width: 760px;
-    }
-
-    .eyebrow {
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 12px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        color: var(--sage);
-        margin-bottom: 18px;
-    }
-
-    .eyebrow::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--amber);
-        box-shadow: 0 0 0 3px rgba(198, 135, 58, 0.22);
-    }
-
-    .hero h1 {
-        font-size: clamp(40px, 5vw, 58px);
-        line-height: 1.06;
-        margin-bottom: 16px;
-        color: var(--paper);
-    }
-
-    .hero p {
-        color: rgba(244, 246, 242, 0.75);
-        font-size: 17px;
-        max-width: 55ch;
-    }
-
-    /* ========================= DASHBOARD ========================= */
-    .dashboard {
-        padding: 60px 0 80px;
-    }
-
-    .section-heading {
-        margin-bottom: 28px;
-    }
-
-    .section-heading h2 {
-        font-size: 30px;
-        color: var(--ink);
-        margin-bottom: 6px;
-    }
-
-    .section-heading p {
-        color: #5b6660;
-        font-size: 14.5px;
-    }
-
-    /* ========================= CARDS ========================= */
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-        margin-bottom: 42px;
-    }
-
-    .card {
-        background: var(--white);
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 26px;
-        box-shadow: 0 8px 24px rgba(22, 35, 31, 0.05);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(22, 35, 31, 0.08);
-    }
-
-    .card h3 {
-        font-family: 'IBM Plex Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #68736d;
-        margin-bottom: 12px;
-    }
-
-    .value {
-        font-family: 'Newsreader', Georgia, serif;
-        font-size: 42px;
-        line-height: 1;
-        color: var(--teal-700);
-    }
-
-    /* ========================= PROFILE ========================= */
-    .profile {
-        background: var(--white);
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 32px;
-        box-shadow: 0 8px 24px rgba(22, 35, 31, 0.05);
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding-bottom: 20px;
-        margin-bottom: 22px;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .profile h2 {
-        font-size: 28px;
-        color: var(--ink);
-    }
-
-    .profile-label {
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--teal-600);
-    }
-
-    .profile-info {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-
-    .profile-item {
-        padding: 18px;
-        background: var(--paper);
-        border-radius: 10px;
-    }
-
-    .profile-item span {
-        display: block;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #68736d;
-        margin-bottom: 6px;
-    }
-
-    .profile-item strong {
-        display: block;
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--ink);
-        word-break: break-word;
-    }
-
-    /* ========================= FOOTER ========================= */
-    footer {
-        background: #0a2b29;
-        color: rgba(244, 246, 242, 0.55);
-        padding: 36px 0;
-        font-size: 13.5px;
-    }
-
-    .footer-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .footer-links {
-        display: flex;
-        gap: 22px;
-    }
-
-    .footer-links a {
-        color: rgba(244, 246, 242, 0.55);
-        transition: color 0.2s ease;
-    }
-
-    .footer-links a:hover {
-        color: var(--paper);
-    }
-
-    /* ========================= RESPONSIVE ========================= */
-    @media (max-width: 900px) {
-        .cards {
-            grid-template-columns: repeat(2, 1fr);
+        :root {
+            --ink: #16231f;
+            --paper: #f4f6f2;
+            --paper-dim: #eceee8;
+            --teal-900: #0d3634;
+            --teal-800: #124542;
+            --teal-700: #1b5e5a;
+            --teal-600: #256f6a;
+            --amber: #c6873a;
+            --amber-soft: #e7c396;
+            --sage: #b9cfc0;
+            --white: #ffffff;
+            --line: rgba(22, 35, 31, 0.12);
+            --line-dark: rgba(244, 246, 242, 0.14);
+            --danger: #b3452f;
+            --success: #2f7a4f;
         }
 
-        .profile-info {
-            grid-template-columns: 1fr;
-        }
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
-    @media (max-width: 650px) {
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; }
+
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--amber);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
         .container {
-            padding: 0 20px;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        /* ========================= HEADER ========================= */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(13, 54, 52, 0.96);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line-dark);
         }
 
         .nav {
-            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+            gap: 20px;
         }
 
+        .wordmark {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--paper);
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .wordmark span { color: var(--amber); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: rgba(244, 246, 242, 0.78);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: color .2s, border-color .2s;
+        }
+
+        .nav-link:hover {
+            color: var(--paper);
+            border-color: rgba(244, 246, 242, 0.2);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.on { background: #6fbf8e; box-shadow: 0 0 0 3px rgba(111, 191, 142, 0.22); }
+        .status-dot.off { background: #e0a15c; box-shadow: 0 0 0 3px rgba(224, 161, 92, 0.22); }
+
         .user-name {
+            color: rgba(244, 246, 242, 0.85);
+            font-size: 14px;
             display: none;
         }
 
+        .logout-form { margin: 0; }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--amber);
+            color: #241505;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            background: #d29648;
+            box-shadow: 0 8px 20px rgba(198, 135, 58, 0.25);
+        }
+
+        /* ========================= HERO ========================= */
         .hero {
-            padding: 60px 0 64px;
+            background:
+                radial-gradient(720px 420px at 82% -10%, rgba(198, 135, 58, 0.16), transparent 60%),
+                linear-gradient(180deg, var(--teal-900), #0a2b29 88%);
+            color: var(--paper);
+            padding: 68px 0 76px;
+        }
+
+        .hero-content { max-width: 760px; }
+
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--sage);
+            margin-bottom: 16px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--amber);
+            box-shadow: 0 0 0 3px rgba(198, 135, 58, 0.22);
         }
 
         .hero h1 {
-            font-size: 40px;
+            font-size: clamp(34px, 4.5vw, 48px);
+            line-height: 1.08;
+            margin-bottom: 14px;
+            color: var(--paper);
         }
 
         .hero p {
-            font-size: 16px;
+            color: rgba(244, 246, 242, 0.75);
+            font-size: 16.5px;
+            max-width: 55ch;
         }
 
-        .dashboard {
-            padding: 45px 0 60px;
+        /* ========================= 2FA BANNER ========================= */
+        .banner {
+            margin-top: 26px;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(198, 135, 58, 0.14);
+            border: 1px solid rgba(198, 135, 58, 0.35);
+            border-radius: 12px;
+            padding: 14px 18px;
         }
+
+        .banner p {
+            color: var(--paper);
+            font-size: 14px;
+            max-width: none;
+        }
+
+        .banner a {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--amber-soft);
+            white-space: nowrap;
+            border-bottom: 1px solid rgba(231, 195, 150, 0.4);
+        }
+
+        /* ========================= DASHBOARD ========================= */
+        .dashboard { padding: 56px 0 80px; }
+
+        .section-heading { margin-bottom: 26px; }
+        .section-heading h2 { font-size: 28px; color: var(--ink); margin-bottom: 6px; }
+        .section-heading p { color: #5b6660; font-size: 14.5px; }
 
         .cards {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 40px;
         }
 
-        .profile {
+        .card {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
             padding: 24px;
+            box-shadow: 0 8px 24px rgba(22, 35, 31, 0.05);
+            transition: transform .15s ease, box-shadow .15s ease;
         }
 
-        .profile-header {
-            align-items: flex-start;
-            flex-direction: column;
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(22, 35, 31, 0.08);
+        }
+
+        .card h3 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #68736d;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 38px;
+            line-height: 1;
+            color: var(--teal-700);
+            margin-bottom: 6px;
+        }
+
+        .card .hint {
+            font-size: 12.5px;
+            color: #8a938c;
+        }
+
+        /* ========================= PANELS ========================= */
+        .panels {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(22, 35, 31, 0.05);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding-bottom: 18px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel-header h2 { font-size: 24px; color: var(--ink); }
+
+        .panel-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--teal-600);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .profile-item {
+            padding: 16px;
+            background: var(--paper);
+            border-radius: 10px;
+        }
+
+        .profile-item span {
+            display: block;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #68736d;
+            margin-bottom: 6px;
+        }
+
+        .profile-item strong {
+            display: block;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink);
+            word-break: break-word;
+        }
+
+        /* ========================= SECURITY PANEL ========================= */
+        .security-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .security-status.on {
+            background: rgba(47, 122, 79, 0.1);
+            color: var(--success);
+        }
+
+        .security-status.off {
+            background: rgba(224, 161, 92, 0.16);
+            color: #8a5a24;
+        }
+
+        .panel p.security-desc {
+            font-size: 13.5px;
+            color: #5b6660;
+            margin-bottom: 18px;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 11px 18px;
+            border-radius: 9px;
+            border: 1px solid var(--teal-700);
+            color: var(--teal-700);
+            font-size: 14px;
+            font-weight: 600;
+            transition: background .2s, color .2s;
+        }
+
+        .btn-outline:hover { background: var(--teal-700); color: var(--white); }
+
+        /* ========================= FOOTER ========================= */
+        footer {
+            background: #0a2b29;
+            color: rgba(244, 246, 242, 0.55);
+            padding: 36px 0;
+            font-size: 13.5px;
         }
 
         .footer-row {
-            flex-direction: column;
-            align-items: flex-start;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
         }
-    }
+
+        .footer-links { display: flex; gap: 22px; }
+        .footer-links a { color: rgba(244, 246, 242, 0.55); transition: color .2s ease; }
+        .footer-links a:hover { color: var(--paper); }
+
+        /* ========================= RESPONSIVE ========================= */
+        @media (min-width: 560px) {
+            .user-name { display: inline; }
+        }
+
+        @media (max-width: 900px) {
+            .cards { grid-template-columns: repeat(2, 1fr); }
+            .panels { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 650px) {
+            .container { padding: 0 20px; }
+            .nav { padding: 14px 0; }
+            .hero { padding: 52px 0 60px; }
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 15.5px; }
+            .banner { flex-direction: column; align-items: flex-start; }
+            .dashboard { padding: 40px 0 56px; }
+            .cards { grid-template-columns: 1fr; }
+            .panel { padding: 22px; }
+            .profile-info { grid-template-columns: 1fr; }
+            .footer-row { flex-direction: column; align-items: flex-start; }
+        }
     </style>
 </head>
-
 <body>
-    <!-- ========================= HEADER ========================== -->
+
+    {{-- ========================= HEADER ========================= --}}
     <header>
         <div class="container">
-            <div class="nav"> <a href="{{ route('landing') }}" class="wordmark"> Ecoa<span>.</span> </a>
-                <div class="nav-right"> <span class="user-name"> {{ auth()->user()->name }} </span>
-                    <form method="POST" action="{{ route('logout') }}" class="logout-form"> @csrf <button type="submit"
-                            class="logout-btn"> Sair </button> </form>
+            <div class="nav">
+                <a href="{{ route('landing') }}" class="wordmark" style="display:flex;align-items:center;gap:10px;"><img src="{{ asset('img/ecoa-icone.png') }}" alt="" style="height:32px;width:auto;">Ecoa<span>.</span></a>
+
+                <div class="nav-right">
+                    {{-- Indica, direto no menu, se o usuário já ativou o 2FA --}}
+                    <a href="{{ route('security.index') }}" class="nav-link">
+                        <span class="status-dot {{ auth()->user()->two_factor_confirmed_at ? 'on' : 'off' }}"></span>
+                        Segurança
+                    </a>
+
+                    <span class="user-name">{{ auth()->user()->name }}</span>
+
+                    <form method="POST" action="{{ route('logout') }}" class="logout-form">
+                        @csrf
+                        <button type="submit" class="logout-btn">Sair</button>
+                    </form>
                 </div>
             </div>
         </div>
-    </header> <!-- ========================= HERO ========================== -->
+    </header>
+
+    {{-- ========================= HERO ========================= --}}
     <section class="hero">
         <div class="container">
-            <div class="hero-content"> <span class="eyebrow"> Painel Ecoa </span>
-                <h1> Painel Principal </h1>
-                <p> Bem-vindo ao sistema Ecoa. Aqui você acompanha as informações do acompanhamento fonoaudiológico.
-                </p>
+            <div class="hero-content">
+                <span class="eyebrow">Painel Ecoa</span>
+                <h1>Olá, {{ explode(' ', auth()->user()->name)[0] }}.</h1>
+                <p>Aqui você acompanha crianças, planos terapêuticos e a biblioteca de exercícios do acompanhamento fonoaudiológico.</p>
+
+                @unless (auth()->user()->two_factor_confirmed_at)
+                    <div class="banner">
+                        <p>Sua conta ainda não tem verificação em duas etapas ativada.</p>
+                        <a href="{{ route('security.index') }}">Ativar agora &rarr;</a>
+                    </div>
+                @endunless
             </div>
         </div>
-    </section> <!-- ========================= DASHBOARD ========================== -->
+    </section>
+
+    {{-- ========================= DASHBOARD ========================= --}}
     <main class="dashboard">
         <div class="container">
+
             <div class="section-heading">
-                <h2> Visão geral </h2>
-                <p> Resumo das informações cadastradas no sistema. </p>
-            </div> <!-- CARDS -->
+                <h2>Visão geral</h2>
+                <p>Resumo das informações cadastradas no sistema.</p>
+            </div>
+
             <div class="cards">
                 <div class="card">
-                    <h3> Crianças </h3>
-                    <div class="value"> 0 </div>
+                    <h3>Crianças</h3>
+                    <div class="value">0</div>
+                    <div class="hint">nenhuma cadastrada ainda</div>
                 </div>
                 <div class="card">
-                    <h3> Planos Terapêuticos </h3>
-                    <div class="value"> 0 </div>
+                    <h3>Planos terapêuticos</h3>
+                    <div class="value">0</div>
+                    <div class="hint">nenhum plano criado</div>
                 </div>
                 <div class="card">
-                    <h3> Exercícios </h3>
-                    <div class="value"> 0 </div>
+                    <h3>Exercícios</h3>
+                    <div class="value">0</div>
+                    <div class="hint">biblioteca vazia</div>
                 </div>
                 <div class="card">
-                    <h3> Profissionais </h3>
-                    <div class="value"> 0 </div>
-                </div>
-            </div> <!-- PERFIL -->
-            <div class="profile">
-                <div class="profile-header">
-                    <h2> Usuário autenticado </h2> <span class="profile-label"> Sessão ativa </span>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-item"> <span> Nome </span> <strong> {{ auth()->user()->name }} </strong> </div>
-                    <div class="profile-item"> <span> E-mail </span> <strong> {{ auth()->user()->email }} </strong>
-                    </div>
-                    <div class="profile-item"> <span> ID </span> <strong> {{ auth()->user()->id }} </strong> </div>
+                    <h3>Profissionais</h3>
+                    <div class="value">1</div>
+                    <div class="hint">você</div>
                 </div>
             </div>
+
+            <div class="panels">
+
+                {{-- ===================== PERFIL ===================== --}}
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Usuário autenticado</h2>
+                        <span class="panel-label">Sessão ativa</span>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-item">
+                            <span>Nome</span>
+                            <strong>{{ auth()->user()->name }}</strong>
+                        </div>
+                        <div class="profile-item">
+                            <span>E-mail</span>
+                            <strong>{{ auth()->user()->email }}</strong>
+                        </div>
+                        <div class="profile-item">
+                            <span>Perfil de acesso</span>
+                            <strong>{{ ucwords(str_replace('_', ' ', auth()->user()->perfil ?? 'não definido')) }}</strong>
+                        </div>
+                        <div class="profile-item">
+                            <span>ID</span>
+                            <strong>{{ auth()->user()->id }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ===================== SEGURANÇA ===================== --}}
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 style="font-size:22px;">Segurança</h2>
+                    </div>
+
+                    @if (auth()->user()->two_factor_confirmed_at)
+                        <div class="security-status on">
+                            <span class="status-dot on"></span> Verificação em duas etapas ativada
+                        </div>
+                        <p class="security-desc">Sua conta está protegida por um segundo fator de autenticação.</p>
+                    @else
+                        <div class="security-status off">
+                            <span class="status-dot off"></span> Verificação em duas etapas desativada
+                        </div>
+                        <p class="security-desc">Adicione uma camada extra de proteção à sua conta com um aplicativo autenticador.</p>
+                    @endif
+
+                    <a href="{{ route('security.index') }}" class="btn-outline">Gerenciar segurança</a>
+                </div>
+
+            </div>
+
         </div>
-    </main> <!-- ========================= FOOTER ========================== -->
+    </main>
+
+    {{-- ========================= FOOTER ========================= --}}
     <footer>
         <div class="container">
-            <div class="footer-row"> <span> © 2026 Ecoa — Sistema de Acompanhamento Fonoaudiológico Infantil </span>
-                <div class="footer-links"> <a href="{{ route('landing') }}"> Início </a> <a href="{{ route('home') }}">
-                        Painel </a> </div>
+            <div class="footer-row">
+                <span>© 2026 Ecoa — Sistema de Acompanhamento Fonoaudiológico Infantil</span>
+                <div class="footer-links">
+                    <a href="{{ route('landing') }}">Início</a>
+                    <a href="{{ route('home') }}">Painel</a>
+                    <a href="{{ route('security.index') }}">Segurança</a>
+                </div>
             </div>
         </div>
     </footer>
-</body>
 
+</body>
 </html>

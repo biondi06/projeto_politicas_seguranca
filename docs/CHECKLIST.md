@@ -21,7 +21,21 @@ Este checklist tem como objetivo organizar os requisitos de segurança desenvolv
 
 ---
 
-## 2. Funcionalidades verificadas
+## 2. Recuperação de Senha
+
+| Requisito | Implementação | Status |
+|---|---|---|
+| 2.1 — Funcionalidade implementada | Fluxo completo de recuperação via Laravel Fortify | Concluído |
+| 2.2 — Token criptograficamente seguro | Token aleatório gerado pelo Fortify, hash armazenado no banco | Concluído |
+| 2.3 — Token com tempo de expiração | `expire => 60` (minutos) configurado em `config/auth.php` | Concluído |
+| 2.4 — Token invalidado após uso | Registro removido da tabela `password_reset_tokens` após redefinição | Concluído |
+| 2.5 — Falha correta para token expirado | Erro de validação exibido, senha não é alterada | Concluído |
+| 2.6 — Registro de solicitação em log | Listener do evento de envio registrado em `AppServiceProvider` | Concluído |
+| 2.7 — Registro de sucesso/falha do processo | Evento `PasswordReset` (sucesso) + middleware `LogPasswordResetOutcome` (falha) | Concluído |
+
+---
+
+## 3. Funcionalidades verificadas
 
 ### Cadastro e login
 
@@ -64,9 +78,20 @@ Este checklist tem como objetivo organizar os requisitos de segurança desenvolv
 - [x] Rate Limiting no processo de autenticação em dois fatores
 - [x] Limite de 5 tentativas por minuto no 2FA
 
+### Recuperação de senha
+
+- [x] Solicitação de link de recuperação por e-mail
+- [x] Geração de token criptograficamente seguro
+- [x] Token com tempo de expiração (60 minutos)
+- [x] Token invalidado após o uso
+- [x] Tratamento correto de token expirado ou inválido
+- [x] Registro em log da solicitação de recuperação
+- [x] Registro em log do sucesso da redefinição
+- [x] Registro em log da falha na redefinição
+
 ---
 
-## 3. Evidências
+## 4. Evidências
 
 Os testes realizados durante o desenvolvimento foram registrados em imagens e estão organizados na pasta:
 
@@ -87,24 +112,31 @@ Entre as principais evidências estão:
 - `rate_limit.png` — teste do limite de tentativas;
 - `tela_limit.png` — bloqueio após excesso de tentativas;
 - `sessao_validada.png` — validação da sessão;
-- `sessao_invalidada.png` — invalidação da sessão.
+- `sessao_invalidada.png` — invalidação da sessão;
+- `recuperacao_solicitacao.png` — solicitação de recuperação de senha;
+- `recuperacao_link_gerado.png` — link de recuperação gerado;
+- `recuperacao_sucesso.png` — redefinição de senha concluída;
+- `recuperacao_token_invalido.png` — tentativa com token inválido;
+- `recuperacao_logs.png` — registros em log da solicitação, do sucesso e da falha.
 
 ---
 
-## 4. Documentação
+## 5. Documentação
 
-A documentação detalhada do Requisito 1 está disponível no arquivo:
+A documentação detalhada de cada requisito está disponível nos arquivos:
 
 ```text
 docs/Requisito 1 — Autenticação e Gestão de Credenciais.md
+docs/Requisito 2 — Recuperação de Senha.md
 ```
 
-Nela estão descritos o funcionamento do módulo, as configurações utilizadas, as decisões técnicas e os resultados dos testes realizados.
+Nelas estão descritos o funcionamento de cada módulo, as configurações utilizadas, as decisões técnicas e os resultados dos testes realizados.
 
 ---
 
-## 5. Situação atual
+## 6. Situação atual
 
 **Requisito 1 — Autenticação e Gestão de Credenciais: CONCLUÍDO**
+**Requisito 2 — Recuperação de Senha: CONCLUÍDO**
 
-O código-fonte, a documentação e as evidências referentes ao requisito estão organizados no repositório do projeto.
+O código-fonte, a documentação e as evidências referentes aos requisitos estão organizados no repositório do projeto.
