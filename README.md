@@ -14,7 +14,7 @@ terapeuta ocupacional que acompanham a mesma criança;
 casa (hoje isso costuma ser passado em papel avulso ou verbalmente); 
 
 - O acompanhamento do progresso da criança é feito de forma informal (anotações soltas), sem 
-histórico estruturado que ajude a ajustar a terapia ao longo do tempo;
+histórico estruturado que ajude a ajustar a terapia ao longo do tempo.
 ## Funcionalidades (v1)
 - Cadastro de crianças com Plano Terapêutico Fonoaudiológico
 - Biblioteca de exercícios de estimulação da fala
