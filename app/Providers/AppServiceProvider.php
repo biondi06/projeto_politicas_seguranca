@@ -1,9 +1,6 @@
-
 <?php
 
-
 namespace App\Providers;
-
 
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -12,14 +9,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
-
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         //
     }
-
 
     public function boot(): void
     {
@@ -34,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-
         // Requisito 2.7 — registra quando a senha é redefinida com sucesso.
         Event::listen(function (PasswordReset $event) {
             Log::channel('single')->info('Senha redefinida com sucesso.', [
@@ -44,7 +38,6 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-
         // Personaliza o e-mail de recuperação de senha (texto em
         // português + identidade visual do Ecoa via tema "ecoa.css").
         ResetPassword::toMailUsing(function ($notifiable, $token) {
@@ -52,7 +45,6 @@ class AppServiceProvider extends ServiceProvider
                 'token' => $token,
                 'email' => $notifiable->getEmailForPasswordReset(),
             ], false));
-
 
             return (new MailMessage)
                 ->subject('Redefinição de senha — Ecoa')
