@@ -38,8 +38,11 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        // Personaliza o e-mail de recuperação de senha (texto em
-        // português + identidade visual do Ecoa via tema "ecoa.css").
+        // Personaliza o e-mail de recuperação de senha: texto em
+        // português, identidade visual do Ecoa (tema "ecoa.css") e
+        // "Responder para" apontando para o e-mail oficial do Ecoa —
+        // mesmo o envio técnico sendo feito via Resend (onboarding@resend.dev),
+        // qualquer resposta do destinatário cai na caixa real do projeto.
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             $url = url(route('password.reset', [
                 'token' => $token,
@@ -54,7 +57,10 @@ class AppServiceProvider extends ServiceProvider
                 ->line('Este link expira em 60 minutos.')
                 ->line('Se você não solicitou essa alteração, nenhuma ação é necessária — sua senha continua a mesma.')
                 ->salutation('Atenciosamente, Equipe Ecoa')
-                ->theme('ecoa');
+                ->theme('ecoa')
+                ->withSymfonyMessage(function ($message) {
+                    $message->replyTo('fonoaudiologiaecoa@gmail.com');
+                });
         });
     }
 }
