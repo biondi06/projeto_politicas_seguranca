@@ -1,11 +1,8 @@
 FROM php:8.4-cli
 
 # Dependências do sistema + extensões PHP necessárias (MySQL, zip, etc.)
-# ca-certificates é necessário para validar a conexão TLS com servidores
-# SMTP externos (como o do Gmail) — sem isso, o container pode falhar
-# silenciosamente ao tentar autenticar via TLS/SSL.
 RUN apt-get update && apt-get install -y \
-    git unzip curl ca-certificates libzip-dev libpng-dev libonig-dev libxml2-dev \
+    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Composer
