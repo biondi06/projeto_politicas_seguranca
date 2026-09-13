@@ -18,6 +18,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+    }
         // Requisito 2.6 — registra toda solicitação de recuperação de senha.
         Event::listen(function (\Illuminate\Notifications\Events\NotificationSending $event) {
             if ($event->notification instanceof ResetPassword) {

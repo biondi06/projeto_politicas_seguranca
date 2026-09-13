@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComentarioPlano extends Model
 {
-    //
+    protected $casts = [
+    'comentario' => 'encrypted',
+    ];
 }

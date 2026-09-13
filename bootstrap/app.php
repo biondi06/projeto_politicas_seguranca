@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\LogPasswordResetOutcome::class,
+            \App\Http\Middleware\EnsureHttps::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
