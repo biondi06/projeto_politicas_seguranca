@@ -35,6 +35,19 @@ Este checklist tem como objetivo organizar os requisitos de segurança desenvolv
 
 ---
 
+## 3. Criptografia e Comunicação Segura
+
+| Requisito | Implementação | Status |
+|---|---|---|
+| 3.1 — TLS/HTTPS | Certificado gerenciado pelo Railway + trustProxies | Concluído |
+| 3.2 — Bloqueio de conexão insegura | Middleware EnsureHttps | Concluído |
+| 3.3 — Evidência de tráfego cifrado | Cadeado HTTPS ativo | Concluído |
+| 3.4 — Dados criptografados em repouso | Cast "encrypted" em campos clínicos | Concluído |
+| 3.5 — Algoritmo adequado (AES) | AES-256-CBC nativo do Laravel | Concluído |
+| 3.6 — Chaves protegidas | APP_KEY só em variável de ambiente | Concluído |
+| 3.7 — Estratégia documentada | docs/Requisito 3 — Criptografia e Comunicação Segura.md | Concluído |
+| 3.8 — Justificativas técnicas | Documentação, seção 5 | Concluído |
+
 ## 3. Funcionalidades verificadas
 
 ### Cadastro e login
