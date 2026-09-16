@@ -61,6 +61,13 @@
             </select>
         </div>
 
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="aceite_lgpd" id="aceite_lgpd" class="form-check-input" required>
+            <label for="aceite_lgpd" class="form-check-label small">
+                Li e aceito os Termos de Uso e a Política de Privacidade do Ecoa
+            </label>
+        </div>
+
         <button type="submit" class="btn btn-ecoa w-100">Criar conta</button>
 
         <div class="text-center mt-3">

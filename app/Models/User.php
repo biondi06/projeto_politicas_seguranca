@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'name',
@@ -28,7 +29,7 @@ class User extends Authenticatable
     // Habilita os recursos de autenticação em dois fatores fornecidos
     // pelo Laravel Fortify, permitindo armazenar e validar o segredo
     // TOTP e os códigos de recuperação associados ao usuário.
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -42,5 +43,10 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function consentimentos()
+    {
+        return $this->hasMany(Consentimento::class);
     }
 }

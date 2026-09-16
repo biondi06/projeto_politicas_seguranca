@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Consentimento;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -13,15 +14,6 @@ class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 
-    /**
-     * Validate and create a newly registered user.
-     *
-     * @param  array<string, string>  $input
-     *
-     * @throws ValidationException
-     */
-
-    
     public function create(array $input): User
     {
         Validator::make($input, [
@@ -35,17 +27,27 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            // Requisito 4.4 — consentimento explícito obrigatório no cadastro
+            'aceite_lgpd' => ['required', 'accepted'],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'perfil' => $input['perfil'],
             'email' => $input['email'],
-            // A senha nunca é armazenada em texto puro.
-            // Hash::make() utiliza o algoritmo configurado pela aplicação,
-            // atualmente Argon2id, gerando um hash com salt criptográfico
-            // exclusivo para cada senha.
             'password' => Hash::make($input['password']),
         ]);
+
+        // Requisitos 4.4/4.5/4.7 — registra o consentimento, associado
+        // à finalidade do tratamento, com data e versão do termo aceito.
+        Consentimento::create([
+            'user_id' => $user->id,
+            'finalidade' => 'Uso da plataforma Ecoa e tratamento de dados terapêuticos da criança acompanhada',
+            'versao_termo' => 'v1.0',
+            'aceito_em' => now(),
+            'ip' => request()->ip(),
+        ]);
+
+        return $user;
     }
 }
