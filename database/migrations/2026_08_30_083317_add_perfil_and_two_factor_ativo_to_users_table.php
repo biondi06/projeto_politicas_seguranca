@@ -10,17 +10,25 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('perfil')->nullable()->after('email');
-        $table->boolean('two_factor_ativo')->default(false)->after('perfil');
-    });
-}
+    {
+        Schema::table('users', function (Blueprint $table) {
+            if (!Schema::hasColumn('users', 'two_factor_ativo')) {
+                $table->boolean('two_factor_ativo')
+                    ->default(false)
+                    ->after('perfil');
+            }
+        });
+    }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn(['perfil', 'two_factor_ativo']);
-    });
-}
+    {
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'two_factor_ativo')) {
+                $table->dropColumn('two_factor_ativo');
+            }
+        });
+    }
 };
