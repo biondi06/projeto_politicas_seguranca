@@ -104,7 +104,25 @@ Este checklist tem como objetivo organizar os requisitos de segurança desenvolv
 
 ---
 
-## 4. Evidências
+## 4. Conformidade com a LGPD
+
+| Requisito | Implementação | Status |
+|---|---|---|
+| 4.1 — Listagem dos dados coletados | Documentado em docs/Requisito 4 | Concluído |
+| 4.2 — Associação dado × finalidade | Documentado em docs/Requisito 4 | Concluído |
+| 4.3 — Evidência de minimização | Documentado em docs/Requisito 4 | Concluído |
+| 4.4 — Registro de consentimento | Checkbox obrigatório + tabela consentimentos | Concluído |
+| 4.5 — Consentimento associado à finalidade | Campo finalidade | Concluído |
+| 4.6 — Revogação do consentimento | LgpdController@revogarConsentimento | Concluído |
+| 4.7 — Data e versão do consentimento | Campos aceito_em/versao_termo | Concluído |
+| 4.8 — Consulta aos dados do titular | Tela /meus-dados | Concluído |
+| 4.9 — Exportação dos dados | LgpdController@exportar | Concluído |
+| 4.10 — Exclusão dos dados pessoais | LgpdController@excluir | Concluído |
+| 4.11 — Fluxo documentado | docs/Requisito 4, seção 5.4 | Concluído |
+
+---
+
+## 5. Evidências
 
 Os testes realizados durante o desenvolvimento foram registrados em imagens e estão organizados na pasta:
 
@@ -134,7 +152,7 @@ Entre as principais evidências estão:
 
 ---
 
-## 5. Documentação
+## 6. Documentação
 
 A documentação detalhada de cada requisito está disponível nos arquivos:
 
@@ -147,7 +165,7 @@ Nelas estão descritos o funcionamento de cada módulo, as configurações utili
 
 ---
 
-## 6. Situação atual
+## 7. Situação atual
 
 **Requisito 1 — Autenticação e Gestão de Credenciais: CONCLUÍDO**
 **Requisito 2 — Recuperação de Senha: CONCLUÍDO**
