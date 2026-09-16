@@ -26,9 +26,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    // Habilita os recursos de autenticação em dois fatores fornecidos
-    // pelo Laravel Fortify, permitindo armazenar e validar o segredo
-    // TOTP e os códigos de recuperação associados ao usuário.
     use HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
 
     /**

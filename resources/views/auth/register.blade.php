@@ -1,11 +1,13 @@
 {{--
     Tela de cadastro de novo usuário.
+
     Envia POST para a rota "register" (RegisteredUserController@store),
     que delega a criação para app/Actions/Fortify/CreateNewUser.php.
-    Nessa Action é onde o Laravel aplica o hash bcrypt na senha antes de
-    salvar (Hash::make($input['password'])) — nunca guardamos a senha em
-    texto puro, conforme requisito 1.1/1.3/1.4.
+
+    A Action valida os dados, cria o usuário com senha protegida
+    por hash e registra o consentimento LGPD.
 --}}
+
 <x-layouts.guest :title="'Criar conta — Ecoa'" :subtitle="'Crie sua conta de acesso'">
 
     @if ($errors->any())
@@ -22,56 +24,90 @@
         @csrf
 
         <div class="mb-3">
-            <label for="name" class="form-label">Nome completo</label>
+            <label for="name" class="form-label">
+                Nome completo
+            </label>
+
             <input id="name" type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus
                 autocomplete="name">
         </div>
 
         <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
+            <label for="email" class="form-label">
+                E-mail
+            </label>
+
             <input id="email" type="email" name="email" class="form-control" value="{{ old('email') }}" required
                 autocomplete="username">
         </div>
 
         <div class="mb-3">
-            <label for="password" class="form-label">Senha</label>
+            <label for="password" class="form-label">
+                Senha
+            </label>
+
             <input id="password" type="password" name="password" class="form-control" required
                 autocomplete="new-password">
-            <div class="form-text">Mínimo de 8 caracteres.</div>
+
+            <div class="form-text">
+                Mínimo de 8 caracteres.
+            </div>
         </div>
 
         <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Confirme a senha</label>
+            <label for="password_confirmation" class="form-label">
+                Confirme a senha
+            </label>
+
             <input id="password_confirmation" type="password" name="password_confirmation" class="form-control" required
                 autocomplete="new-password">
         </div>
 
         <div class="mb-3">
-            <label for="perfil" class="form-label">Perfil de acesso</label>
+            <label for="perfil" class="form-label">
+                Perfil de acesso
+            </label>
+
             <select id="perfil" name="perfil" class="form-select" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option value="fonoaudiologo" {{ old('perfil') === 'fonoaudiologo' ? 'selected' : '' }}>Fonoaudiólogo
+                <option value="" disabled {{ old('perfil') ? '' : 'selected' }}>
+                    Selecione...
                 </option>
+
+                <option value="fonoaudiologo" {{ old('perfil') === 'fonoaudiologo' ? 'selected' : '' }}>
+                    Fonoaudiólogo
+                </option>
+
                 <option value="coordenador_clinico" {{ old('perfil') === 'coordenador_clinico' ? 'selected' : '' }}>
-                    Coordenador Clínico</option>
+                    Coordenador Clínico
+                </option>
+
                 <option value="administrador_ti" {{ old('perfil') === 'administrador_ti' ? 'selected' : '' }}>
-                    Administrador de TI</option>
+                    Administrador de TI
+                </option>
+
                 <option value="responsavel_legal" {{ old('perfil') === 'responsavel_legal' ? 'selected' : '' }}>
-                    Responsável Legal</option>
+                    Responsável Legal
+                </option>
             </select>
         </div>
 
         <div class="mb-3 form-check">
-            <input type="checkbox" name="aceite_lgpd" id="aceite_lgpd" class="form-check-input" required>
+            <input type="checkbox" name="aceite_lgpd" id="aceite_lgpd" class="form-check-input" value="1" required>
+
             <label for="aceite_lgpd" class="form-check-label small">
-                Li e aceito os Termos de Uso e a Política de Privacidade do Ecoa
+                Li e aceito os Termos de Uso e a Política de Privacidade
+                do Ecoa.
             </label>
         </div>
 
-        <button type="submit" class="btn btn-ecoa w-100">Criar conta</button>
+        <button type="submit" class="btn btn-ecoa w-100">
+            Criar conta
+        </button>
 
         <div class="text-center mt-3">
-            <a href="{{ route('login') }}" class="small text-muted">Já tem conta? Entrar</a>
+            <a href="{{ route('login') }}" class="small text-muted">
+                Já tem conta? Entrar
+            </a>
         </div>
     </form>
 

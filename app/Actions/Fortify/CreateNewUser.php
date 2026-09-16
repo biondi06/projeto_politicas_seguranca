@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Consentimento;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,17 +17,25 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @param  array<string, string>  $input
+     * @param array<string, string> $input
      *
      * @throws ValidationException
      */
-
-    
     public function create(array $input): User
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'perfil' => ['required', 'string', 'in:fonoaudiologo,coordenador_clinico,administrador_ti,responsavel_legal'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'perfil' => [
+                'required',
+                'string',
+                'in:fonoaudiologo,coordenador_clinico,administrador_ti,responsavel_legal',
+            ],
+
             'email' => [
                 'required',
                 'string',
@@ -34,23 +43,30 @@ class CreateNewUser implements CreatesNewUsers
                 'max:255',
                 Rule::unique(User::class),
             ],
+
             'password' => $this->passwordRules(),
+
+            'aceite_lgpd' => [
+                'required',
+                'accepted',
+            ],
         ])->validate();
 
-        return User::create([
+        // Cria o usuário.
+        // A senha nunca é armazenada em texto puro.
+        // Hash::make() utiliza o algoritmo configurado pela aplicação,
+        // atualmente Argon2id, gerando um hash com salt criptográfico
+        // exclusivo para cada senha.
+        $user = User::create([
             'name' => $input['name'],
             'perfil' => $input['perfil'],
             'email' => $input['email'],
-            // A senha nunca é armazenada em texto puro.
-            // Hash::make() utiliza o algoritmo configurado pela aplicação,
-            // atualmente Argon2id, gerando um hash com salt criptográfico
-            // exclusivo para cada senha.
             'password' => Hash::make($input['password']),
         ]);
 
-
-        // Requisitos 4.4/4.5/4.7 — registra o consentimento, associado
-        // à finalidade do tratamento, com data e versão do termo aceito.
+        // Requisitos 4.4/4.5/4.7 — registra o consentimento
+        // associado à finalidade do tratamento, com data,
+        // versão do termo e IP do titular.
         Consentimento::create([
             'user_id' => $user->id,
             'finalidade' => 'Uso da plataforma Ecoa e tratamento de dados terapêuticos da criança acompanhada',
@@ -62,3 +78,4 @@ class CreateNewUser implements CreatesNewUsers
         return $user;
     }
 }
+
