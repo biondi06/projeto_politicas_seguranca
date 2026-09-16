@@ -46,17 +46,25 @@ class CreateNewUser implements CreatesNewUsers
 
             'password' => $this->passwordRules(),
 
+            /*
+             * Requisitos 4.14 e 4.15
+             *
+             * O consentimento precisa ser explícito e estar
+             * associado à finalidade informada ao titular.
+             */
             'aceite_lgpd' => [
                 'required',
                 'accepted',
             ],
         ])->validate();
 
-        // Cria o usuário.
-        // A senha nunca é armazenada em texto puro.
-        // Hash::make() utiliza o algoritmo configurado pela aplicação,
-        // atualmente Argon2id, gerando um hash com salt criptográfico
-        // exclusivo para cada senha.
+        /*
+         * Criação do usuário.
+         *
+         * A senha nunca é armazenada em texto puro.
+         * Hash::make() utiliza o algoritmo configurado
+         * pela aplicação, atualmente Argon2id.
+         */
         $user = User::create([
             'name' => $input['name'],
             'perfil' => $input['perfil'],
@@ -64,18 +72,30 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
-        // Requisitos 4.4/4.5/4.7 — registra o consentimento
-        // associado à finalidade do tratamento, com data,
-        // versão do termo e IP do titular.
+        /*
+         * Registro do consentimento.
+         *
+         * Requisitos atendidos:
+         *
+         * 4.14 — Registro explícito de consentimento
+         * 4.15 — Consentimento associado à finalidade
+         * 4.17 — Registro de data e versão do consentimento
+         *
+         * O IP é armazenado como evidência adicional do aceite.
+         */
         Consentimento::create([
             'user_id' => $user->id,
-            'finalidade' => 'Uso da plataforma Ecoa e tratamento de dados terapêuticos da criança acompanhada',
+
+            'finalidade' =>
+                'Uso da plataforma Ecoa e tratamento de dados necessários à execução das funcionalidades do sistema',
+
             'versao_termo' => 'v1.0',
+
             'aceito_em' => now(),
+
             'ip' => request()->ip(),
         ]);
 
         return $user;
     }
 }
-

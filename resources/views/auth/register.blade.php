@@ -90,14 +90,49 @@
                 </option>
             </select>
         </div>
-
         <div class="mb-3 form-check">
+
             <input type="checkbox" name="aceite_lgpd" id="aceite_lgpd" class="form-check-input" value="1" required>
 
             <label for="aceite_lgpd" class="form-check-label small">
-                Li e aceito os Termos de Uso e a Política de Privacidade
-                do Ecoa.
+                Concordo com o tratamento dos meus dados pessoais conforme os
+                <a href="{{ route('landing') }}" target="_blank" rel="noopener noreferrer"
+                    class="text-decoration-none fw-semibold">
+                    Termos de Uso
+                </a>
+                e a
+                <a href="{{ route('landing') }}" target="_blank" rel="noopener noreferrer"
+                    class="text-decoration-none fw-semibold">
+                    Política de Privacidade
+                </a>.
             </label>
+
+            <details class="ms-4 mt-1">
+                <summary class="small text-muted" style="cursor: pointer;">
+                    Ver detalhes sobre o tratamento dos dados
+                </summary>
+
+                <div class="small text-muted mt-2">
+                    <p class="mb-2">
+                        Os dados informados serão utilizados para:
+                    </p>
+
+                    <ul class="mb-2 ps-3">
+                        <li>criação e gerenciamento da conta;</li>
+                        <li>autenticação e segurança de acesso;</li>
+                        <li>utilização das funcionalidades do Ecoa;</li>
+                        <li>gerenciamento dos registros necessários à operação da plataforma.</li>
+                    </ul>
+
+                    <p class="mb-0">
+                        O consentimento é registrado com a finalidade,
+                        versão do termo e data do aceite. O usuário poderá
+                        exercer seus direitos sobre seus dados conforme a
+                        Política de Privacidade.
+                    </p>
+                </div>
+            </details>
+
         </div>
 
         <button type="submit" class="btn btn-ecoa w-100">
