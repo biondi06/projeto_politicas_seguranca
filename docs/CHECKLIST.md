@@ -122,7 +122,18 @@ Este checklist tem como objetivo organizar os requisitos de segurança desenvolv
 
 ---
 
-## 5. Evidências
+## 5. Auditoria e Logs
+
+| Requisito | Implementação | Status |
+|---|---|---|
+| 5.1 — Logs de autenticação | Evento Login do Laravel | Concluído |
+| 5.2 — Logs de falhas e 2FA | Evento Failed + middleware LogTwoFactorOutcome | Concluído |
+| 5.3 — Proteção contra alteração dos logs | Cadeia de hash SHA-256 | Concluído |
+| 5.4 — Exemplo de análise de logs | Tela /auditoria — falhas por IP | Concluído |
+
+---
+
+## 6. Evidências
 
 Os testes realizados durante o desenvolvimento foram registrados em imagens e estão organizados na pasta:
 
@@ -152,7 +163,7 @@ Entre as principais evidências estão:
 
 ---
 
-## 6. Documentação
+## 7. Documentação
 
 A documentação detalhada de cada requisito está disponível nos arquivos:
 
@@ -165,7 +176,7 @@ Nelas estão descritos o funcionamento de cada módulo, as configurações utili
 
 ---
 
-## 7. Situação atual
+## 8. Situação atual
 
 **Requisito 1 — Autenticação e Gestão de Credenciais: CONCLUÍDO**
 **Requisito 2 — Recuperação de Senha: CONCLUÍDO**

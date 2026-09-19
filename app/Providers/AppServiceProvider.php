@@ -8,6 +8,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Failed;
+use App\Models\AuditoriaLog;
+use Laravel\Fortify\Fortify;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +42,22 @@ class AppServiceProvider extends ServiceProvider
                 'user_id' => $event->user->id,
                 'email' => $event->user->email,
                 'ip' => request()->ip(),
+            ]);
+        });
+
+        // Requisito 5.1 — login bem-sucedido (inclui após 2FA, já que o
+        // Fortify só dispara Login quando a autenticação está completa)
+        Event::listen(function (Login $event) {
+            AuditoriaLog::registrar('login_sucesso', [
+                'user_id' => $event->user->id,
+                'email' => $event->user->email,
+            ]);
+        });
+
+        // Requisito 5.2 — tentativa de login malsucedida
+        Event::listen(function (Failed $event) {
+            AuditoriaLog::registrar('login_falha', [
+                'email' => $event->credentials[Fortify::username()] ?? null,
             ]);
         });
 
