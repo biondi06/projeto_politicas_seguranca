@@ -10,7 +10,7 @@ Projeto avaliativo do curso de Sistemas de Informação — Universidade de Mogi
 ![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-9.0-4479A1?logo=mysql&logoColor=white)
-![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 </div>
 
@@ -69,22 +69,16 @@ Crianças em acompanhamento de desenvolvimento da fala (atraso de fala, trocas f
 
 ## Estrutura do projeto
 
-```text
-app/
- Actions/Fortify/        # Criação de usuário, reset de senha (com consentimento LGPD)
- Http/Controllers/       # LgpdController, AuditoriaController, SecurityController...
- Http/Middleware/        # EnsureHttps, EnsureTwoFactorIsEnabled, LogTwoFactorOutcome...
- Models/                 # Crianca, PlanoTerapeutico, Consentimento, AuditoriaLog...
-database/migrations/     # 15+ migrations (entidades clínicas + segurança/LGPD)
-resources/views/
- auth/                   # Login, registro, 2FA, recuperação de senha
- lgpd/                   # Painel "Meus Dados"
- auditoria/              # Painel de auditoria
-docs/
- Requisito 1 a 5...md   # Documentação técnica de cada módulo de segurança
- evidencias/             # Capturas de tela dos testes funcionais
- CHECKLIST.md             # Checklist consolidado do projeto
-.github/workflows/       # Pipeline DevSecOps
+- `app/Actions/Fortify/` — criação de usuário e reset de senha (com registro de consentimento LGPD)
+- `app/Http/Controllers/` — `LgpdController`, `AuditoriaController`, `SecurityController`, entre outros
+- `app/Http/Middleware/` — `EnsureHttps`, `EnsureTwoFactorIsEnabled`, `LogTwoFactorOutcome`, `LogPasswordResetOutcome`
+- `app/Models/` — `Crianca`, `PlanoTerapeutico`, `Consentimento`, `AuditoriaLog`, entre outros
+- `database/migrations/` — mais de 15 migrations (entidades clínicas + segurança/LGPD)
+- `resources/views/auth/` — login, registro, 2FA, recuperação de senha
+- `resources/views/lgpd/` — painel "Meus Dados"
+- `resources/views/auditoria/` — painel de auditoria
+- `docs/` — documentação técnica de cada requisito de segurança, evidências e checklist
+- `.github/workflows/` — pipeline DevSecOps
 
 ---
 
@@ -95,8 +89,37 @@ composer install
 npm install
 php artisan key:generate
 php artisan migrate
-php artisan serve
 npm run build
+php artisan serve
 ```
 
 Acesse em `http://127.0.0.1:8000`
+
+> Configure o `.env` com as credenciais do seu banco MySQL local e, opcionalmente, um provedor SMTP/API (ex: Resend) para o envio real de e-mails de recuperação de senha.
+
+---
+
+## Documentação técnica
+
+Toda a documentação detalhada de cada módulo de segurança está em [`docs/`](./docs):
+
+- [Requisito 1 — Autenticação e Gestão de Credenciais](<./docs/Requisito 1 — Autenticação e Gestão de Credenciais.md>)
+- [Requisito 2 — Recuperação de Senha](<./docs/Requisito 2 — Recuperação de Senha.md>)
+- [Requisito 3 — Criptografia e Comunicação Segura](<./docs/Requisito 3 — Criptografia e Comunicação Segura.md>)
+- [Requisito 4 — Conformidade com a LGPD](<./docs/Requisito 4 — Conformidade com a LGPD.md>)
+- [Requisito 5 — Auditoria e Logs](<./docs/Requisito 5 — Auditoria e Logs.md>)
+- [Checklist do projeto](./docs/CHECKLIST.md)
+
+---
+
+## Equipe
+
+- Daniel Pereira Biondi
+- Lorena Cunha de Souza
+- Rodrigo Diniz da Silva Ribeiro
+
+---
+
+## Licença
+
+Este projeto é distribuído sob a licença MIT.
