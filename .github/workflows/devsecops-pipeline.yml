@@ -1,1 +1,79 @@
+name: DevSecOps Pipeline
 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ============================================================
+  # 1. Varredura de Segredos — detecta chaves (ex: APP_KEY),
+  #    senhas de banco, tokens SMTP etc. expostos no histórico do Git.
+  # ============================================================
+  secrets-scan:
+    name: Secrets Scanning (TruffleHog)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # histórico completo, não só o último commit
+
+      - name: Executar TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          extra_args: --fail --only-verified
+
+  # ============================================================
+  # 2. Análise de Vulnerabilidades em Dependências (SCA) — checa
+  #    se pacotes do composer.lock/package-lock.json têm CVEs
+  #    conhecidas (ex: versão vulnerável do Laravel/Fortify).
+  # ============================================================
+  dependency-scan:
+    name: Dependency Vulnerability Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Executar Trivy (filesystem scan)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'          # falha o job se achar HIGH/CRITICAL
+          format: 'table'
+          ignore-unfixed: true
+
+  # ============================================================
+  # 3. Análise Estática de Segurança (SAST) — procura padrões de
+  #    código inseguro (ex: query sem binding, falha de validação).
+  #    Repositório é público -> Semgrep open-source cobre bem o PHP.
+  # ============================================================
+  sast-scan:
+    name: Static Application Security Testing (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Semgrep
+        run: pip install semgrep
+
+      - name: Executar Semgrep
+        run: |
+          semgrep scan \
+            --config p/security-audit \
+            --config p/php \
+            --config p/owasp-top-ten \
+            --severity ERROR \
+            --error
