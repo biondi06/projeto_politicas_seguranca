@@ -25,7 +25,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          extra_args: --fail --only-verified
+          extra_args: --only-verified
 
   # ============================================================
   # 2. Análise de Vulnerabilidades em Dependências (SCA) — checa

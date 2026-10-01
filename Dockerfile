@@ -18,6 +18,12 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm install && npm run build
 
+# Segurança (Semgrep: dockerfile.security.missing-user) — evita rodar
+# o container como root. Cria um usuário dedicado e transfere a posse
+# dos arquivos da aplicação antes de trocar de usuário.
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
+
 EXPOSE 8080
 
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
