@@ -12,7 +12,12 @@ Route::get('/', function () {
 Route::middleware(['auth', 'two_factor_required'])->group(function () {
 
     Route::get('/home', function () {
-        return view('home');
+        $usuario = auth()->user();
+
+        return view('home', [
+            'usuario' => $usuario,
+            'ultimoConsentimento' => $usuario->consentimentos()->latest('aceito_em')->first(),
+        ]);
     })->name('home');
 
     Route::get('/auditoria', [AuditoriaController::class, 'index'])

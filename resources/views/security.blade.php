@@ -1,16 +1,7 @@
 {{--
     Painel de segurança da conta — requisitos 1.5 (2FA implementada) e
-    1.6 (validação do 2FA após autenticação primária).
-
-    Estados possíveis do 2FA para o usuário logado:
-    1. Desativado            -> two_factor_secret é nulo
-    2. Ativado, não confirmado -> two_factor_secret existe, mas
-                                   two_factor_confirmed_at é nulo
-    3. Ativado e confirmado    -> two_factor_confirmed_at preenchido
-
-    Cada estado mostra uma ação diferente, todas usando as rotas nativas
-    do Laravel Fortify (nenhuma lógica de 2FA foi escrita à mão aqui —
-    apenas a interface que aciona os endpoints já testados do pacote).
+    1.6 (validação do 2FA após autenticação primária). CSS vem do
+    app.css global (classes .internal-*).
 --}}
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -18,68 +9,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segurança da conta — Ecoa</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background:#f4f6f2; font-family: system-ui, sans-serif; }
-        .topbar { background:#0d3634; padding:18px 0; }
-        .topbar a { color:#f4f6f2; text-decoration:none; font-weight:700; }
-        .panel {
-            max-width: 560px; margin: 48px auto; background:#fff;
-            border-radius: 14px; padding: 36px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-        }
-        .btn-ecoa { background:#c6873a; border:none; color:#241505; font-weight:600; }
-        .btn-ecoa:hover { background:#b3792f; color:#241505; }
-        .badge-status { font-size: 13px; }
-        #qr-code svg { margin: 16px auto; display:block; }
-    </style>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+    @vite(['resources/css/app.css'])
 </head>
-<body>
+<body class="internal-body">
 
-    <div class="topbar">
+    <div class="internal-topbar">
         <div class="container">
-            <a href="{{ route('home') }}" style="display:flex;align-items:center;gap:8px;"><img src="{{ asset('img/ecoa-icone.png') }}" alt="" style="height:22px;width:auto;">&larr; Ecoa</a>
+            <a href="{{ route('home') }}">&larr; Ecoa</a>
         </div>
     </div>
 
     <div class="container">
-        <div class="panel">
-            <h4 class="mb-1">Verificação em duas etapas</h4>
-            <p class="text-muted small mb-4">
+        <div class="internal-panel">
+            <h4>Verificação em duas etapas</h4>
+            <p class="security-desc" style="margin-bottom:24px;">
                 Protege sua conta exigindo um código adicional, gerado por um
                 aplicativo autenticador (ex: Google Authenticator), além da senha.
             </p>
 
             {{-- ===================== ESTADO: DESATIVADO ===================== --}}
             @if (! $user->two_factor_secret)
-                <span class="badge bg-secondary badge-status mb-3">Desativada</span>
-                <p>Sua conta ainda não usa verificação em duas etapas.</p>
+                <span class="internal-badge neutral" style="margin-bottom:12px; display:inline-block;">Desativada</span>
+                <p style="margin-bottom:18px;">Sua conta ainda não usa verificação em duas etapas.</p>
 
-                {{-- Aciona Fortify\TwoFactorAuthenticationController@store,
-                     que gera o segredo TOTP e os códigos de recuperação. --}}
                 <form method="POST" action="{{ route('two-factor.enable') }}">
                     @csrf
-                    <button type="submit" class="btn btn-ecoa">Ativar verificação em duas etapas</button>
+                    <button type="submit" class="btn-ecoa" style="width:auto; padding:11px 22px;">Ativar verificação em duas etapas</button>
                 </form>
 
             {{-- ============== ESTADO: ATIVADA, AGUARDANDO CONFIRMAÇÃO ============== --}}
             @elseif (! $user->two_factor_confirmed_at)
-                <span class="badge bg-warning text-dark badge-status mb-3">Aguardando confirmação</span>
-                <p>Escaneie o QR code abaixo no seu aplicativo autenticador e informe o código gerado.</p>
+                <span class="internal-badge warning" style="margin-bottom:12px; display:inline-block;">Aguardando confirmação</span>
+                <p style="margin-bottom:18px;">Escaneie o QR code abaixo no seu aplicativo autenticador e informe o código gerado.</p>
 
-                <div id="qr-code" class="text-center">Carregando QR code...</div>
+                <div id="qr-code" style="text-align:center;">Carregando QR code...</div>
 
-                {{-- Confirma o código gerado pelo app, ativando de vez o 2FA
-                     (Fortify\ConfirmedTwoFactorAuthenticationController@store) --}}
-                <form method="POST" action="{{ route('two-factor.confirm') }}" class="mt-3">
+                <form method="POST" action="{{ route('two-factor.confirm') }}" style="margin-top:18px;">
                     @csrf
-                    <div class="mb-3">
-                        <label for="code" class="form-label">Código de 6 dígitos</label>
-                        <input type="text" name="code" id="code" class="form-control" inputmode="numeric" autofocus required>
+                    <div class="auth-form-group">
+                        <label for="code">Código de 6 dígitos</label>
+                        <input type="text" name="code" id="code" inputmode="numeric" autofocus required>
                     </div>
-                    <button type="submit" class="btn btn-ecoa">Confirmar e ativar</button>
+                    <button type="submit" class="btn-ecoa" style="width:auto; padding:11px 22px;">Confirmar e ativar</button>
                 </form>
 
-                {{-- Busca o SVG do QR code via a rota nativa do Fortify e injeta na página --}}
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script>
                     $.get("{{ route('two-factor.qr-code') }}", function (data) {
@@ -89,17 +63,16 @@
 
             {{-- ===================== ESTADO: ATIVADA E CONFIRMADA ===================== --}}
             @else
-                <span class="badge bg-success badge-status mb-3">Ativada</span>
-                <p>Sua conta está protegida por verificação em duas etapas.</p>
+                <span class="internal-badge success" style="margin-bottom:12px; display:inline-block;">Ativada</span>
+                <p style="margin-bottom:18px;">Sua conta está protegida por verificação em duas etapas.</p>
 
-                <button id="show-codes" class="btn btn-outline-secondary btn-sm mb-3">Ver códigos de recuperação</button>
-                <ul id="recovery-codes" class="list-unstyled small font-monospace"></ul>
+                <button id="show-codes" class="btn-outline" style="width:auto; padding:9px 16px; margin-bottom:14px;">Ver códigos de recuperação</button>
+                <ul id="recovery-codes" style="list-style:none; font-family:'IBM Plex Mono', monospace; font-size:12.5px; margin-bottom:18px;"></ul>
 
-                {{-- Desativa o 2FA (Fortify\TwoFactorAuthenticationController@destroy) --}}
-                <form method="POST" action="{{ route('two-factor.disable') }}" class="mt-3">
+                <form method="POST" action="{{ route('two-factor.disable') }}">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Desativar verificação em duas etapas</button>
+                    <button type="submit" class="btn-outline" style="width:auto; padding:9px 16px; border-color:var(--danger); color:var(--danger);">Desativar verificação em duas etapas</button>
                 </form>
 
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

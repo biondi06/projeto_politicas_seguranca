@@ -1,57 +1,50 @@
 {{--
-    Tela de login.
-    Envia POST para a rota "login" (login.store), que é tratada pelo
-    Laravel Fortify (AuthenticatedSessionController@store).
-    O Fortify já aplica, nessa rota: hash bcrypt na verificação da senha,
-    rate limiting contra força bruta (5 tentativas/minuto, ver
-    FortifyServiceProvider) e redirecionamento automático para a tela
-    de 2FA quando o usuário tiver a verificação em duas etapas ativada.
+    Tela de login. Envia POST para "login" (login.store), tratada pelo
+    Laravel Fortify: hash Argon2id na verificação da senha, rate limiting
+    (5 tentativas/min, ver FortifyServiceProvider) e redirecionamento
+    automático para o desafio 2FA quando ativado.
 --}}
 <x-layouts.guest :title="'Entrar — Ecoa'" :subtitle="'Entre com suas credenciais'">
 
-    {{-- Exibe erros de validação vindos do backend (ex: credenciais inválidas) --}}
     @if ($errors->any())
-        <div class="alert alert-danger py-2">
-            <ul class="mb-0 ps-3">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="auth-alert error">
+            @foreach ($errors->all() as $error)
+                {{ $error }}
+            @endforeach
         </div>
     @endif
 
-    {{-- Mensagem de status (ex: link de reset de senha enviado) --}}
     @if (session('status'))
-        <div class="alert alert-success py-2">{{ session('status') }}</div>
+        <div class="auth-alert success">{{ session('status') }}</div>
     @endif
 
     <form method="POST" action="{{ route('login') }}">
-        @csrf {{-- Token CSRF: protege o formulário contra requisições forjadas de outros sites --}}
+        @csrf
 
-        <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            <input id="email" type="email" name="email" class="form-control"
-                   value="{{ old('email') }}" required autofocus autocomplete="username">
+        <div class="auth-form-group">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}"
+                   required autofocus autocomplete="username">
         </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Senha</label>
-            <input id="password" type="password" name="password" class="form-control"
+        <div class="auth-form-group">
+            <label for="password">Senha</label>
+            <input id="password" type="password" name="password"
                    required autocomplete="current-password">
         </div>
 
-        <div class="mb-3 form-check">
-            <input type="checkbox" name="remember" id="remember" class="form-check-input">
-            <label for="remember" class="form-check-label">Manter conectado</label>
+        <div class="auth-form-group" style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" name="remember" id="remember" style="width:auto;">
+            <label for="remember" style="margin:0; font-weight:400;">Manter conectado</label>
         </div>
 
-        <button type="submit" class="btn btn-ecoa w-100">Entrar</button>
+        <button type="submit" class="btn-ecoa">Entrar</button>
 
-        <div class="text-center mt-3">
-            <a href="{{ route('password.request') }}" class="small text-muted">Esqueci minha senha</a>
+        <div style="text-align:center; margin-top:16px;">
+            <a href="{{ route('password.request') }}" class="auth-link">Esqueci minha senha</a>
         </div>
-        <div class="text-center mt-2">
-            <a href="{{ route('register') }}" class="small text-muted">Ainda não tem conta? Cadastre-se</a>
+        <div style="text-align:center; margin-top:8px;">
+            <a href="{{ route('register') }}" class="auth-link">Ainda não tem conta? Cadastre-se</a>
         </div>
     </form>
 

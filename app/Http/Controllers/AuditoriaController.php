@@ -46,10 +46,15 @@ class AuditoriaController extends Controller
 
         $resultado = AuditoriaLog::verificarIntegridade();
 
-        $mensagem = $resultado['adulterado']
-            ? "Cadeia de logs violada a partir do registro #{$resultado['adulterado']}!"
+        $adulterado = (bool) $resultado['adulterado'];
+
+        $mensagem = $adulterado
+            ? "Cadeia de logs violada a partir do registro #{$resultado['adulterado']}! A integridade dos registros não pôde ser confirmada."
             : "Integridade confirmada: {$resultado['total']} registros verificados, nenhuma adulteração detectada.";
 
-        return back()->with('status', $mensagem);
+        return back()->with([
+            'status' => $mensagem,
+            'status_type' => $adulterado ? 'danger' : 'success',
+        ]);
     }
 }
