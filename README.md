@@ -107,7 +107,7 @@ Toda a documentação detalhada de cada módulo de segurança está em [`docs/`]
 - [Requisito 2 — Recuperação de Senha](<./docs/Requisito 2 — Recuperação de Senha.md>)
 - [Requisito 3 — Criptografia e Comunicação Segura](<./docs/Requisito 3 — Criptografia e Comunicação Segura.md>)
 - [Requisito 4 — Conformidade com a LGPD](<./docs/Requisito 4 — Conformidade com a LGPD.md>)
-- [Requisito 5 — Auditoria e Logs](<./docs/Requisito 5 — Auditoria e Logs.md>)
+- [Requisito 5 — Auditoria e Logs](<[./docs/Requisito 5 — Auditoria e Logs.md](https://github.com/biondi06/projeto_politicas_seguranca/blob/main/docs/requisito-5-auditoria-e-logs.md)>)
 - [Checklist do projeto](./docs/CHECKLIST.md)
 
 ---
