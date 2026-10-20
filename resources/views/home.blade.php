@@ -1,6 +1,14 @@
+@php
+    // Calculado uma única vez. Funciona com ou sem variáveis vindas da rota.
+    $usuario = auth()->user();
+    $ultimoConsentimento = $usuario->consentimentos()->latest('aceito_em')->first();
+    $consentimentoAtivo = $usuario->consentimentos()->whereNull('revogado_em')->latest('aceito_em')->first();
+
+    // ativo | revogado | pendente (nunca registrou consentimento)
+    $estadoConsentimento = $consentimentoAtivo ? 'ativo' : ($ultimoConsentimento ? 'revogado' : 'pendente');
+@endphp
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +23,10 @@
         href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 
+    {{-- CSS global do Ecoa (antes vivia inline em cada página; agora
+         compilado via Vite e compartilhado entre todas as telas). --}}
     @vite(['resources/css/app.css'])
 </head>
-
 <body>
 
     {{-- ========================================================= HEADER ========================================================== --}}
@@ -32,8 +41,7 @@
                 <div class="nav-right">
 
                     <a href="{{ route('security.index') }}" class="security-link" title="Configurações de segurança">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <rect x="4" y="11" width="16" height="9" rx="2"></rect>
                             <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                             <circle cx="12" cy="15" r="1"></circle>
@@ -42,16 +50,13 @@
                     </a>
 
                     <div class="account" id="accountMenu">
-                        <button type="button" class="account-button" id="accountButton" aria-expanded="false"
-                            aria-haspopup="true">
+                        <button type="button" class="account-button" id="accountButton" aria-expanded="false" aria-haspopup="true">
                             <span class="account-avatar">{{ strtoupper(substr($usuario->name, 0, 1)) }}</span>
                             <span class="account-info">
                                 <span class="account-name">{{ $usuario->name }}</span>
-                                <span
-                                    class="account-role">{{ ucwords(str_replace('_', ' ', $usuario->perfil ?? 'Usuário')) }}</span>
+                                <span class="account-role">{{ ucwords(str_replace('_', ' ', $usuario->perfil ?? 'Usuário')) }}</span>
                             </span>
-                            <svg class="account-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg class="account-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="m6 9 6 6 6-6"></path>
                             </svg>
                         </button>
@@ -66,8 +71,7 @@
                             </div>
 
                             <a href="{{ route('security.index') }}" class="dropdown-link" role="menuitem">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                    stroke-linecap="round" stroke-linejoin="round">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z"></path>
                                     <path d="m9 12 2 2 4-4"></path>
                                 </svg>
@@ -75,8 +79,7 @@
                             </a>
 
                             <a href="{{ route('lgpd.meus-dados') }}" class="dropdown-link" role="menuitem">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                    stroke-linecap="round" stroke-linejoin="round">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="9"></circle>
                                     <path d="M12 11v5"></path>
                                     <path d="M12 8h.01"></path>
@@ -89,8 +92,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="dropdown-logout" role="menuitem">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                        stroke-linecap="round" stroke-linejoin="round">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                         <path d="m16 17 5-5-5-5"></path>
                                         <path d="M21 12H9"></path>
@@ -111,21 +113,18 @@
             <div class="hero-content">
                 <span class="eyebrow">Painel Ecoa</span>
                 <h1>Olá, {{ explode(' ', $usuario->name)[0] }}.</h1>
-                <p>Seu espaço para acompanhar atendimentos, organizar informações e manter o cuidado infantil reunido em
-                    um só lugar.</p>
+                <p>Seu espaço para acompanhar atendimentos, organizar informações e manter o cuidado infantil reunido em um só lugar.</p>
 
                 <div class="hero-meta">
                     <span class="hero-meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="9"></circle>
                             <path d="M12 7v5l3 2"></path>
                         </svg>
                         Ambiente de acompanhamento
                     </span>
                     <span class="hero-meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 7 10 17l-5-5"></path>
                         </svg>
                         Sessão protegida
@@ -133,21 +132,43 @@
                 </div>
 
                 @unless ($usuario->two_factor_confirmed_at)
-                <div class="banner">
-                    <div class="banner-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z"></path>
-                            <path d="M12 8v4"></path>
-                            <path d="M12 15h.01"></path>
-                        </svg>
+                    <div class="banner">
+                        <div class="banner-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z"></path>
+                                <path d="M12 8v4"></path>
+                                <path d="M12 15h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="banner-content">
+                            <p>Sua conta ainda não possui a verificação em duas etapas.</p>
+                            <a href="{{ route('security.index') }}">Ativar agora &rarr;</a>
+                        </div>
                     </div>
-                    <div class="banner-content">
-                        <p>Sua conta ainda não possui a verificação em duas etapas.</p>
-                        <a href="{{ route('security.index') }}">Ativar agora &rarr;</a>
-                    </div>
-                </div>
                 @endunless
+
+                {{-- Aviso de consentimento: a home abre normalmente, mas o usuário é avisado --}}
+                @if ($estadoConsentimento !== 'ativo')
+                    <div class="banner">
+                        <div class="banner-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 8v4"></path>
+                                <path d="M12 15h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="banner-content">
+                            <p>
+                                @if ($estadoConsentimento === 'revogado')
+                                    Seu consentimento foi revogado. Algumas áreas do sistema estão bloqueadas.
+                                @else
+                                    Sua conta ainda não tem um consentimento registrado. Algumas áreas do sistema estão bloqueadas.
+                                @endif
+                            </p>
+                            <a href="{{ route('lgpd.meus-dados') }}">Resolver agora &rarr;</a>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
@@ -170,8 +191,7 @@
                     <div class="card-top">
                         <h3>Crianças</h3>
                         <div class="card-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="9" cy="8" r="3"></circle>
                                 <path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path>
                                 <path d="M16 5.5a3 3 0 0 1 0 5.8"></path>
@@ -187,8 +207,7 @@
                     <div class="card-top">
                         <h3>Planos terapêuticos</h3>
                         <div class="card-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
                                 <path d="M14 2v6h6"></path>
                                 <path d="M8 13h8"></path>
@@ -204,16 +223,11 @@
                     <div class="card-top">
                         <h3>Exercícios</h3>
                         <div class="card-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 7v10"></path>
-                                <path d="M8 5v14"></path>
-                                <path d="M16 5v14"></path>
-                                <path d="M20 7v10"></path>
-                                <path d="M2 9h6"></path>
-                                <path d="M16 9h6"></path>
-                                <path d="M2 15h6"></path>
-                                <path d="M16 15h6"></path>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 7v10"></path><path d="M8 5v14"></path>
+                                <path d="M16 5v14"></path><path d="M20 7v10"></path>
+                                <path d="M2 9h6"></path><path d="M16 9h6"></path>
+                                <path d="M2 15h6"></path><path d="M16 15h6"></path>
                             </svg>
                         </div>
                     </div>
@@ -225,8 +239,7 @@
                     <div class="card-top">
                         <h3>Profissionais</h3>
                         <div class="card-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="7" r="3"></circle>
                                 <path d="M5 21a7 7 0 0 1 14 0"></path>
                             </svg>
@@ -271,31 +284,29 @@
                     </div>
 
                     @if ($usuario->two_factor_confirmed_at)
-                    <div class="security-status on">
-                        <span class="status-dot on"></span>
-                        Verificação em duas etapas ativada
-                    </div>
-                    <p class="security-desc">Sua conta está protegida por um segundo fator de autenticação.</p>
-                    <div class="security-details">
-                        <div class="security-detail"><span>Status</span><strong>Protegida</strong></div>
-                        <div class="security-detail"><span>2FA</span><strong>Ativo</strong></div>
-                    </div>
+                        <div class="security-status on">
+                            <span class="status-dot on"></span>
+                            Verificação em duas etapas ativada
+                        </div>
+                        <p class="security-desc">Sua conta está protegida por um segundo fator de autenticação.</p>
+                        <div class="security-details">
+                            <div class="security-detail"><span>Status</span><strong>Protegida</strong></div>
+                            <div class="security-detail"><span>2FA</span><strong>Ativo</strong></div>
+                        </div>
                     @else
-                    <div class="security-status off">
-                        <span class="status-dot off"></span>
-                        Verificação em duas etapas desativada
-                    </div>
-                    <p class="security-desc">Adicione uma camada extra de proteção à sua conta usando um aplicativo
-                        autenticador.</p>
-                    <div class="security-details">
-                        <div class="security-detail"><span>Status</span><strong>Atenção necessária</strong></div>
-                        <div class="security-detail"><span>2FA</span><strong>Inativo</strong></div>
-                    </div>
+                        <div class="security-status off">
+                            <span class="status-dot off"></span>
+                            Verificação em duas etapas desativada
+                        </div>
+                        <p class="security-desc">Adicione uma camada extra de proteção à sua conta usando um aplicativo autenticador.</p>
+                        <div class="security-details">
+                            <div class="security-detail"><span>Status</span><strong>Atenção necessária</strong></div>
+                            <div class="security-detail"><span>2FA</span><strong>Inativo</strong></div>
+                        </div>
                     @endif
 
                     <a href="{{ route('security.index') }}" class="btn-outline">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z"></path>
                             <path d="m9 12 2 2 4-4"></path>
                         </svg>
@@ -317,55 +328,67 @@
                 <div class="privacy-content">
                     <div class="privacy-status">
                         <div class="privacy-status-top">
-                            <span class="privacy-dot"></span>
-                            <strong>Seus dados estão disponíveis para consulta</strong>
+                            @if ($estadoConsentimento === 'ativo')
+                                <span class="privacy-dot"></span>
+                                <strong>Seu consentimento está ativo</strong>
+                            @elseif ($estadoConsentimento === 'revogado')
+                                <span class="privacy-dot danger"></span>
+                                <strong>Seu consentimento foi revogado</strong>
+                            @else
+                                <span class="privacy-dot warning"></span>
+                                <strong>Nenhum consentimento registrado</strong>
+                            @endif
                         </div>
-                        <p>O Ecoa permite consultar os dados cadastrais, verificar o histórico de consentimentos,
-                            exportar suas informações, revogar consentimentos e solicitar a exclusão dos dados pessoais.
-                        </p>
+
+                        @if ($estadoConsentimento === 'ativo')
+                            <p>Você pode consultar seus dados, exportar uma cópia, revogar o consentimento ou solicitar a exclusão a qualquer momento.</p>
+                        @else
+                            <p>Sem consentimento ativo, as áreas que tratam dados, como o painel de auditoria, ficam bloqueadas. Conceda o consentimento em “Meus dados” para liberá-las.</p>
+                        @endif
                     </div>
 
                     <div class="privacy-meta">
                         <div class="privacy-meta-item">
-                            <span>Consentimento</span>
+                            <span>Situação</span>
                             <strong>
-                                @if ($ultimoConsentimento && !$ultimoConsentimento->revogado_em)
-                                Ativo
-                                @elseif ($ultimoConsentimento)
-                                Revogado
-                                @else
-                                Não registrado
+                                @if ($estadoConsentimento === 'ativo') Ativo
+                                @elseif ($estadoConsentimento === 'revogado') Revogado
+                                @else Não registrado
                                 @endif
                             </strong>
                         </div>
                         <div class="privacy-meta-item">
                             <span>Versão do termo</span>
-                            <strong>{{ $ultimoConsentimento?->versao_termo ?? 'Não informado' }}</strong>
+                            <strong>{{ $ultimoConsentimento?->versao_termo ?? '—' }}</strong>
                         </div>
                         <div class="privacy-meta-item">
                             <span>Finalidade</span>
-                            <strong>{{ $ultimoConsentimento?->finalidade ?? 'Não informado' }}</strong>
+                            <strong>{{ $ultimoConsentimento?->finalidade ?? '—' }}</strong>
                         </div>
                         <div class="privacy-meta-item">
-                            <span>Último registro</span>
-                            <strong>{{ $ultimoConsentimento?->aceito_em?->format('d/m/Y H:i') ?? 'Não informado' }}</strong>
+                            <span>{{ $estadoConsentimento === 'revogado' ? 'Revogado em' : 'Concedido em' }}</span>
+                            <strong>
+                                @if ($estadoConsentimento === 'revogado')
+                                    {{ $ultimoConsentimento->revogado_em?->format('d/m/Y H:i') ?? '—' }}
+                                @else
+                                    {{ $ultimoConsentimento?->aceito_em?->format('d/m/Y H:i') ?? '—' }}
+                                @endif
+                            </strong>
                         </div>
                     </div>
                 </div>
 
                 <div class="privacy-actions">
                     <a href="{{ route('lgpd.meus-dados') }}" class="privacy-button primary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="9"></circle>
                             <path d="M12 11v5"></path>
                             <path d="M12 8h.01"></path>
                         </svg>
-                        Ver meus dados
+                        Meus dados e privacidade
                     </a>
                     <a href="{{ route('lgpd.exportar') }}" class="privacy-button secondary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 3v12"></path>
                             <path d="m7 10 5 5 5-5"></path>
                             <path d="M5 21h14"></path>
@@ -391,8 +414,7 @@
                          ficam com rótulo "Em breve" até existirem rotas reais. --}}
                     <div class="quick-action is-upcoming" aria-disabled="true">
                         <span class="quick-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="9" cy="8" r="3"></circle>
                                 <path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path>
                                 <path d="M19 8v6"></path>
@@ -408,8 +430,7 @@
 
                     <div class="quick-action is-upcoming" aria-disabled="true">
                         <span class="quick-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
                                 <path d="M14 2v6h6"></path>
                                 <path d="M12 12v6"></path>
@@ -425,16 +446,11 @@
 
                     <div class="quick-action is-upcoming" aria-disabled="true">
                         <span class="quick-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 7v10"></path>
-                                <path d="M8 5v14"></path>
-                                <path d="M16 5v14"></path>
-                                <path d="M20 7v10"></path>
-                                <path d="M2 9h6"></path>
-                                <path d="M16 9h6"></path>
-                                <path d="M2 15h6"></path>
-                                <path d="M16 15h6"></path>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 7v10"></path><path d="M8 5v14"></path>
+                                <path d="M16 5v14"></path><path d="M20 7v10"></path>
+                                <path d="M2 9h6"></path><path d="M16 9h6"></path>
+                                <path d="M2 15h6"></path><path d="M16 15h6"></path>
                             </svg>
                         </span>
                         <span class="quick-text">
@@ -468,31 +484,30 @@
     </footer>
 
     <script>
-    const accountMenu = document.getElementById('accountMenu');
-    const accountButton = document.getElementById('accountButton');
+        const accountMenu = document.getElementById('accountMenu');
+        const accountButton = document.getElementById('accountButton');
 
-    accountButton.addEventListener('click', function(event) {
-        event.stopPropagation();
-        const isOpen = accountMenu.classList.toggle('open');
-        accountButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
+        accountButton.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const isOpen = accountMenu.classList.toggle('open');
+            accountButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
 
-    document.addEventListener('click', function(event) {
-        if (!accountMenu.contains(event.target)) {
-            accountMenu.classList.remove('open');
-            accountButton.setAttribute('aria-expanded', 'false');
-        }
-    });
+        document.addEventListener('click', function (event) {
+            if (!accountMenu.contains(event.target)) {
+                accountMenu.classList.remove('open');
+                accountButton.setAttribute('aria-expanded', 'false');
+            }
+        });
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            accountMenu.classList.remove('open');
-            accountButton.setAttribute('aria-expanded', 'false');
-            accountButton.focus();
-        }
-    });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                accountMenu.classList.remove('open');
+                accountButton.setAttribute('aria-expanded', 'false');
+                accountButton.focus();
+            }
+        });
     </script>
 
 </body>
-
 </html>

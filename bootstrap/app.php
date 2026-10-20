@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'two_factor_required' => \App\Http\Middleware\EnsureTwoFactorIsEnabled::class,
+            'consent_active' => \App\Http\Middleware\EnsureActiveConsent::class,
         ]);
 
         $middleware->web(append: [
