@@ -28,8 +28,20 @@
                 aplicativo autenticador (ex: Google Authenticator), além da senha.
             </p>
 
-            @if (session('status'))
-                <div class="internal-alert">{{ session('status') }}</div>
+            {{-- O Fortify envia códigos internos (ex.: two-factor-authentication-disabled).
+                 Aqui eles viram mensagens para o usuário; qualquer outro texto
+                 de status é exibido como veio. --}}
+            @php
+                $mensagensStatus = [
+                    'two-factor-authentication-enabled'   => 'Verificação em duas etapas iniciada. Escaneie o QR code com o seu aplicativo autenticador e informe o código de 6 dígitos para concluir.',
+                    'two-factor-authentication-confirmed' => 'Verificação em duas etapas ativada. Guarde os seus códigos de recuperação em um lugar seguro.',
+                    'two-factor-authentication-disabled'  => 'Verificação em duas etapas desativada. Você pode ativá-la novamente quando quiser.',
+                    'recovery-codes-generated'            => 'Novos códigos de recuperação gerados. Os anteriores deixaram de valer.',
+                ];
+                $status = session('status');
+            @endphp
+            @if ($status)
+                <div class="internal-alert">{{ $mensagensStatus[$status] ?? $status }}</div>
             @endif
 
             {{-- ===================== ESTADO: DESATIVADO ===================== --}}
