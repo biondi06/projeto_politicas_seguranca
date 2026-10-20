@@ -28,6 +28,10 @@
                 aplicativo autenticador (ex: Google Authenticator), além da senha.
             </p>
 
+            @if (session('status'))
+                <div class="internal-alert">{{ session('status') }}</div>
+            @endif
+
             {{-- ===================== ESTADO: DESATIVADO ===================== --}}
             @if (! $user->two_factor_secret)
                 <span class="internal-badge neutral" style="margin-bottom:12px; display:inline-block;">Desativada</span>
@@ -54,10 +58,19 @@
                     <button type="submit" class="btn-ecoa" style="width:auto; padding:11px 22px;">Confirmar e ativar</button>
                 </form>
 
+                {{-- Permite recomeçar do zero se o QR não carregar ou o usuário desistir --}}
+                <form method="POST" action="{{ route('two-factor.disable') }}" style="margin-top:14px;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-outline" style="width:auto; padding:9px 16px;">Cancelar e reiniciar</button>
+                </form>
+
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script>
                     $.get("{{ route('two-factor.qr-code') }}", function (data) {
                         $('#qr-code').html(data.svg);
+                    }).fail(function () {
+                        $('#qr-code').text('Não foi possível carregar o QR code. Clique em "Cancelar e reiniciar" e ative novamente.');
                     });
                 </script>
 
