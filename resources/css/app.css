@@ -2375,3 +2375,407 @@ footer {
     .tos-scroll-hint svg { animation: none; }
     .tos-progress-bar { transition: none; }
 }
+
+/* =========================================================
+   MEUS DADOS E PRIVACIDADE (LGPD)
+========================================================= */
+
+.internal-topbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.internal-topbar-row form { margin: 0; }
+
+.internal-brand {
+    color: var(--paper);
+    font-weight: 700;
+}
+
+.internal-topbar-logout {
+    background: transparent;
+    border: 1px solid rgba(244, 246, 242, .28);
+    border-radius: 8px;
+    padding: 7px 14px;
+    color: var(--paper);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .2s ease;
+}
+
+.internal-topbar-logout:hover { border-color: var(--paper); }
+
+.lgpd-page {
+    max-width: 1040px;
+    padding-top: 36px;
+    padding-bottom: 64px;
+}
+
+.lgpd-header { margin-bottom: 22px; }
+
+.lgpd-law {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--teal-600);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.lgpd-header h1 {
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 34px;
+    line-height: 1.1;
+}
+
+.lgpd-header p {
+    max-width: 62ch;
+    color: var(--muted);
+    font-size: 14.5px;
+}
+
+.lgpd-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.lgpd-card {
+    margin-bottom: 18px;
+    padding: 26px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    box-shadow: var(--shadow-sm);
+}
+
+.lgpd-grid .lgpd-card { margin-bottom: 0; }
+
+.lgpd-card h2 {
+    margin-bottom: 4px;
+    color: var(--ink);
+    font-size: 20px;
+}
+
+.lgpd-lead {
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* Estado do consentimento */
+
+.lgpd-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 10px;
+}
+
+.lgpd-status strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.lgpd-status span.lgpd-status-text {
+    display: block;
+    margin-top: 2px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    opacity: .9;
+}
+
+.lgpd-status-dot {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+.lgpd-status.ativo { background: rgba(47, 122, 79, .09); color: var(--success); }
+.lgpd-status.ativo .lgpd-status-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(47, 122, 79, .15); }
+
+.lgpd-status.revogado { background: rgba(179, 69, 47, .08); color: var(--danger); }
+.lgpd-status.revogado .lgpd-status-dot { background: var(--danger); box-shadow: 0 0 0 3px rgba(179, 69, 47, .15); }
+
+.lgpd-status.pendente { background: rgba(212, 148, 81, .14); color: #8a5a24; }
+.lgpd-status.pendente .lgpd-status-dot { background: #d49451; box-shadow: 0 0 0 3px rgba(212, 148, 81, .18); }
+
+/* Lista de dados (rótulo / valor) */
+
+.lgpd-dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 0 18px;
+}
+
+.lgpd-dl.single { grid-template-columns: 1fr; }
+
+.lgpd-dl > div {
+    padding: 12px 14px;
+    background: var(--paper);
+    border-radius: 9px;
+}
+
+.lgpd-dl dt {
+    margin-bottom: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.lgpd-dl dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+/* Botões */
+
+.lgpd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+.lgpd-btn:hover { transform: translateY(-1px); }
+
+.lgpd-btn.primary { background: var(--teal-700); color: var(--white); }
+.lgpd-btn.primary:hover { background: var(--teal-800); }
+
+.lgpd-btn.secondary {
+    background: transparent;
+    border-color: rgba(27, 94, 90, .35);
+    color: var(--teal-700);
+}
+.lgpd-btn.secondary:hover { background: var(--paper); border-color: var(--teal-700); }
+
+.lgpd-btn.danger { background: var(--danger); color: var(--white); }
+.lgpd-btn.danger:hover { background: #9a3a26; }
+
+.lgpd-btn.danger-outline {
+    background: transparent;
+    border-color: rgba(179, 69, 47, .4);
+    color: var(--danger);
+}
+.lgpd-btn.danger-outline:hover { background: rgba(179, 69, 47, .07); border-color: var(--danger); }
+
+.lgpd-btn.amber { background: var(--amber); color: #241505; }
+.lgpd-btn.amber:hover { background: #b3792f; }
+
+/* Linhas de direitos */
+
+.lgpd-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+}
+
+.lgpd-right:first-of-type { border-top: none; padding-top: 4px; }
+
+.lgpd-right h3 {
+    margin-bottom: 3px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.lgpd-right p {
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+}
+
+.lgpd-right.danger h3 { color: var(--danger); }
+
+.lgpd-note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--paper);
+    border-radius: 9px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+}
+
+/* Janelas de confirmação (<dialog> nativo) */
+
+.lgpd-dialog {
+    margin: auto;
+    width: min(480px, calc(100vw - 32px));
+    max-width: none;
+    padding: 28px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: var(--shadow-lg);
+}
+
+.lgpd-dialog::backdrop { background: rgba(8, 37, 34, .6); }
+
+.lgpd-dialog h3 {
+    margin-bottom: 8px;
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 21px;
+}
+
+.lgpd-dialog p {
+    margin-bottom: 12px;
+    color: #3a443e;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.lgpd-dialog ul {
+    margin: 0 0 14px;
+    padding-left: 18px;
+    color: #3a443e;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.lgpd-dialog label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.lgpd-dialog input[type="password"] {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.lgpd-dialog input[type="password"]:focus {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+    background: var(--white);
+}
+
+.lgpd-field-error {
+    margin-top: 6px;
+    color: var(--danger);
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.lgpd-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.lgpd-dialog-actions form { margin: 0; }
+
+/* Variantes do painel de privacidade da home */
+
+.privacy-dot.warning { background: #d49451; box-shadow: 0 0 0 3px rgba(212, 148, 81, .18); }
+.privacy-dot.danger { background: var(--danger); box-shadow: 0 0 0 3px rgba(179, 69, 47, .15); }
+
+.privacy-actions form { margin: 0; }
+
+/* =========================================================
+   PAINEL DE AUDITORIA — filtros, paginação e 4 cards
+========================================================= */
+
+.audit-stats.four { grid-template-columns: repeat(4, 1fr); }
+
+.audit-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.audit-filters label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.audit-filters select,
+.audit-filters input[type="text"] {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.audit-filters input[type="text"] { min-width: 220px; }
+
+.audit-pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 12.5px;
+}
+
+.audit-page-btn {
+    padding: 7px 14px;
+    border: 1px solid rgba(27, 94, 90, .3);
+    border-radius: 8px;
+    color: var(--teal-700);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.audit-page-btn:hover { background: var(--paper); }
+.audit-page-btn.disabled { opacity: .4; pointer-events: none; }
+
+@media (max-width: 860px) {
+    .lgpd-grid { grid-template-columns: 1fr; }
+    .lgpd-right { flex-direction: column; align-items: flex-start; }
+    .audit-stats.four { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 520px) {
+    .lgpd-dl { grid-template-columns: 1fr; }
+    .lgpd-card { padding: 20px; }
+    .audit-stats.four { grid-template-columns: 1fr; }
+}
