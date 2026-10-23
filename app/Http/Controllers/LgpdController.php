@@ -53,7 +53,7 @@ class LgpdController extends Controller
     {
         $user = $request->user();
 
-        $formata = fn ($data) => $data ? $data->format('d/m/Y H:i:s') : '-';
+        $formata = fn ($data) => \App\Support\FusoHorario::formatar($data, 'd/m/Y H:i:s', '-');
 
         $consentimentos = Consentimento::where('user_id', $user->id)
             ->orderBy('aceito_em')
@@ -63,7 +63,7 @@ class LgpdController extends Controller
 
         $linhas = [];
         $linhas[] = 'ECOA — EXPORTAÇÃO DE DADOS PESSOAIS';
-        $linhas[] = 'Gerado em: ' . now()->format('d/m/Y H:i:s');
+        $linhas[] = 'Gerado em: ' . \App\Support\FusoHorario::formatar(now(), 'd/m/Y H:i:s') . ' (horário de Brasília)';
         $linhas[] = str_repeat('=', 60);
         $linhas[] = '';
 
@@ -103,7 +103,7 @@ class LgpdController extends Controller
 
         return response($conteudo, 200, [
             'Content-Type' => 'text/plain; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="meus-dados-ecoa-' . now()->format('Ymd-His') . '.txt"',
+            'Content-Disposition' => 'attachment; filename="meus-dados-ecoa-' . \App\Support\FusoHorario::formatar(now(), 'Ymd-His') . '.txt"',
         ]);
     }
 

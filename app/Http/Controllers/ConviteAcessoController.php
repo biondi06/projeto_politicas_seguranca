@@ -7,6 +7,7 @@ use App\Models\AuditoriaLog;
 use App\Models\ConviteAcesso;
 use App\Models\User;
 use App\Notifications\ConviteAcessoNotification;
+use App\Support\FusoHorario;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -129,7 +130,7 @@ class ConviteAcessoController extends Controller
 
         if ($this->enviarPorEmail($convite, $token, $administrador)) {
             return $resposta
-                ->with('status', "Convite enviado para {$convite->email}. Ele vale até {$convite->expira_em->format('d/m/Y H:i')}.")
+                ->with('status', "Convite enviado para {$convite->email}. Ele vale até " . FusoHorario::formatar($convite->expira_em) . '.')
                 ->with('status_type', 'success');
         }
 

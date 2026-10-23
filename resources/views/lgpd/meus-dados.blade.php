@@ -86,7 +86,7 @@
                         </div>
                         <div>
                             <dt>Concedido em</dt>
-                            <dd>{{ $consentimentoAtivo->aceito_em->format('d/m/Y H:i') }}</dd>
+                            <dd>{{ \App\Support\FusoHorario::formatar($consentimentoAtivo->aceito_em) }}</dd>
                         </div>
                     </dl>
 
@@ -122,7 +122,7 @@
                     </div>
                     <div>
                         <dt>Cadastro</dt>
-                        <dd>{{ $user->created_at->format('d/m/Y H:i') }}</dd>
+                        <dd>{{ \App\Support\FusoHorario::formatar($user->created_at) }}</dd>
                     </div>
                     <div>
                         <dt>Verificação em duas etapas</dt>
@@ -180,8 +180,8 @@
                             <tr>
                                 <td>{{ $c->finalidade }}</td>
                                 <td>{{ $c->versao_termo }}</td>
-                                <td>{{ $c->aceito_em->format('d/m/Y H:i') }}</td>
-                                <td>{{ $c->revogado_em ? $c->revogado_em->format('d/m/Y H:i') : '—' }}</td>
+                                <td>{{ \App\Support\FusoHorario::formatar($c->aceito_em) }}</td>
+                                <td>{{ \App\Support\FusoHorario::formatar($c->revogado_em) }}</td>
                                 <td>
                                     @if ($c->revogado_em)
                                         <span class="internal-badge danger">Revogado</span>

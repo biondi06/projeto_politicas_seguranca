@@ -119,9 +119,9 @@
                                 <td>{{ $convite->criador?->name ?? '—' }}</td>
                                 <td>
                                     @if ($situacao === 'usado')
-                                        usado em {{ $convite->usado_em->format('d/m/Y H:i') }}
+                                        usado em {{ \App\Support\FusoHorario::formatar($convite->usado_em) }}
                                     @else
-                                        até {{ $convite->expira_em->format('d/m/Y H:i') }}
+                                        até {{ \App\Support\FusoHorario::formatar($convite->expira_em) }}
                                     @endif
                                 </td>
                                 <td>

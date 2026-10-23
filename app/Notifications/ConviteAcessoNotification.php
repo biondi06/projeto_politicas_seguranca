@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\ConviteAcesso;
+use App\Support\FusoHorario;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -32,7 +33,7 @@ class ConviteAcessoNotification extends Notification
     {
         $link = route('register', ['convite' => $this->token]);
         $perfil = $this->convite->perfil->rotulo();
-        $validoAte = $this->convite->expira_em->format('d/m/Y H:i');
+        $validoAte = FusoHorario::formatar($this->convite->expira_em);
 
         return (new MailMessage)
             ->subject('Convite de acesso ao Ecoa')

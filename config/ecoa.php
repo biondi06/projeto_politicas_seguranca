@@ -17,6 +17,10 @@ return [
     // que fica gravada em cada consentimento.
     'termos_versao' => env('ECOA_TERMOS_VERSAO', 'v1.0'),
 
+    // Fuso em que os horários são MOSTRADOS ao usuário. O banco e a cadeia de
+    // hash da auditoria continuam em UTC (config/app.php); ver App\Support\FusoHorario.
+    'fuso_exibicao' => env('ECOA_FUSO_EXIBICAO', 'America/Sao_Paulo'),
+
     // Por quantas horas um convite de acesso profissional continua válido.
     'convite_validade_horas' => (int) env('ECOA_CONVITE_VALIDADE_HORAS', 72),
 

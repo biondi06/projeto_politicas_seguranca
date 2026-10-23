@@ -351,7 +351,7 @@
                         </div>
                         <div class="profile-item">
                             <span>Membro desde</span>
-                            <strong>{{ $usuario->created_at?->translatedFormat('d \d\e F \d\e Y') ?? 'Não informado' }}</strong>
+                            <strong>{{ \App\Support\FusoHorario::dataPorExtenso($usuario->created_at, 'Não informado') }}</strong>
                         </div>
                     </div>
                 </div>
@@ -447,9 +447,9 @@
                             <span>{{ $estadoConsentimento === 'revogado' ? 'Revogado em' : 'Concedido em' }}</span>
                             <strong>
                                 @if ($estadoConsentimento === 'revogado')
-                                    {{ $ultimoConsentimento->revogado_em?->format('d/m/Y H:i') ?? '—' }}
+                                    {{ \App\Support\FusoHorario::formatar($ultimoConsentimento->revogado_em) }}
                                 @else
-                                    {{ $ultimoConsentimento?->aceito_em?->format('d/m/Y H:i') ?? '—' }}
+                                    {{ \App\Support\FusoHorario::formatar($ultimoConsentimento?->aceito_em) }}
                                 @endif
                             </strong>
                         </div>

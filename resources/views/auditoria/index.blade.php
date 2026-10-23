@@ -155,7 +155,7 @@
                                 <td><span class="internal-badge {{ \App\Support\EventoAuditoria::classe($log->evento) }}">{{ \App\Support\EventoAuditoria::rotulo($log->evento) }}</span></td>
                                 <td>{{ $log->email ?? '—' }}</td>
                                 <td>{{ $log->ip }}</td>
-                                <td>{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
+                                <td>{{ \App\Support\FusoHorario::formatar($log->created_at, 'd/m/Y H:i:s') }}</td>
                                 <td style="font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);">{{ substr($log->hash_atual, 0, 12) }}...</td>
                             </tr>
                         @empty
@@ -164,6 +164,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <p class="audit-hint" style="margin-top:10px;">
+                Horários no fuso de Brasília. O banco guarda em UTC, e a cadeia de hash também usa o UTC.
+            </p>
 
             {{-- PAGINAÇÃO (feita à mão: o componente padrão do Laravel depende de Tailwind) --}}
             <div class="audit-pager">
