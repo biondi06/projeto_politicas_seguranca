@@ -20,7 +20,15 @@
 
     <div class="internal-topbar">
         <div class="container internal-topbar-row">
-            <a href="{{ route('home') }}">&larr; Voltar ao painel</a>
+            <nav class="internal-topbar-nav" aria-label="Administração">
+                <a href="{{ route('home') }}">&larr; Painel</a>
+                @can('gerenciar-acessos')
+                    <a href="{{ route('convites.index') }}">Acessos profissionais</a>
+                @endcan
+                @can('ver-auditoria')
+                    <a href="{{ route('auditoria.index') }}" class="active">Auditoria e logs</a>
+                @endcan
+            </nav>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="internal-topbar-logout">Sair</button>
@@ -125,6 +133,7 @@
                         <option value="login" {{ $filtro === 'login' ? 'selected' : '' }}>Login</option>
                         <option value="2fa" {{ $filtro === '2fa' ? 'selected' : '' }}>Verificação em duas etapas</option>
                         <option value="lgpd" {{ $filtro === 'lgpd' ? 'selected' : '' }}>LGPD</option>
+                        <option value="convite" {{ $filtro === 'convite' ? 'selected' : '' }}>Convites de acesso</option>
                     </select>
                 </div>
                 <div>

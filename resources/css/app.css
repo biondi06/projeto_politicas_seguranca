@@ -2779,3 +2779,43 @@ footer {
     .lgpd-card { padding: 20px; }
     .audit-stats.four { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   NAVEGAÇÃO ENTRE AS PÁGINAS DE ADMINISTRAÇÃO
+   (barra superior de Auditoria e Acessos profissionais)
+========================================================= */
+
+.internal-topbar .internal-topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.internal-topbar .internal-topbar-nav a {
+    padding: 7px 14px;
+    border-radius: 8px;
+    color: rgba(244, 246, 242, .78);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+}
+
+.internal-topbar .internal-topbar-nav a:hover {
+    background: rgba(255, 255, 255, .08);
+    color: var(--paper);
+}
+
+.internal-topbar .internal-topbar-nav a.active {
+    background: rgba(255, 255, 255, .13);
+    color: var(--paper);
+}
+
+.convite-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.convite-acoes form { margin: 0; }

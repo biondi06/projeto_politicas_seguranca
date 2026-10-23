@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SecurityController;
-use App\Http\Controllers\LgpdController;
 use App\Http\Controllers\AuditoriaController;
+use App\Http\Controllers\ConviteAcessoController;
+use App\Http\Controllers\LgpdController;
+use App\Http\Controllers\SecurityController;
 
 Route::get('/', function () {
     return view('ecoa');
@@ -11,7 +12,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'two_factor_required'])->group(function () {
 
-    // A home abre sempre, como antes. Ela só avisa quando não há consentimento.
+    // A home abre sempre. Ela só avisa quando não há consentimento ativo.
     Route::get('/home', function () {
         $usuario = auth()->user();
 
@@ -24,11 +25,23 @@ Route::middleware(['auth', 'two_factor_required'])->group(function () {
     // Áreas que tratam dados exigem consentimento ativo (requisito 4.6).
     // Sem ele, o middleware "consent_active" leva o usuário a /meus-dados.
     Route::middleware('consent_active')->group(function () {
+
+        // Trilha de auditoria: coordenador clínico e administrador de TI
+        // (Gate "ver-auditoria").
         Route::get('/auditoria', [AuditoriaController::class, 'index'])
             ->name('auditoria.index');
-
         Route::post('/auditoria/verificar', [AuditoriaController::class, 'verificarIntegridade'])
             ->name('auditoria.verificar');
+
+        // Acessos profissionais: só o administrador de TI (Gate "gerenciar-acessos").
+        Route::get('/administracao/convites', [ConviteAcessoController::class, 'index'])
+            ->name('convites.index');
+        Route::post('/administracao/convites', [ConviteAcessoController::class, 'store'])
+            ->name('convites.store');
+        Route::post('/administracao/convites/{convite}/reenviar', [ConviteAcessoController::class, 'reenviar'])
+            ->name('convites.reenviar');
+        Route::delete('/administracao/convites/{convite}', [ConviteAcessoController::class, 'destroy'])
+            ->name('convites.destroy');
     });
 
     // "password.confirm" força reautenticação de senha antes de entrar aqui.

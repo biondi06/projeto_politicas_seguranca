@@ -87,6 +87,35 @@
                                 Meus dados e privacidade
                             </a>
 
+                            {{-- Ferramentas de administração: só aparecem para quem tem permissão --}}
+                            @canany(['gerenciar-acessos', 'ver-auditoria'])
+                                <div class="dropdown-divider"></div>
+
+                                @can('gerenciar-acessos')
+                                    <a href="{{ route('convites.index') }}" class="dropdown-link" role="menuitem">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="9" cy="8" r="3"></circle>
+                                            <path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path>
+                                            <path d="M19 8v6"></path>
+                                            <path d="M16 11h6"></path>
+                                        </svg>
+                                        Acessos profissionais
+                                    </a>
+                                @endcan
+
+                                @can('ver-auditoria')
+                                    <a href="{{ route('auditoria.index') }}" class="dropdown-link" role="menuitem">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+                                            <path d="M14 2v6h6"></path>
+                                            <path d="M8 13h8"></path>
+                                            <path d="M8 17h5"></path>
+                                        </svg>
+                                        Auditoria e logs
+                                    </a>
+                                @endcan
+                            @endcanany
+
                             <div class="dropdown-divider"></div>
 
                             <form method="POST" action="{{ route('logout') }}">
@@ -249,6 +278,55 @@
                     <div class="hint">você</div>
                 </div>
             </div>
+
+            {{-- ADMINISTRAÇÃO: atalhos de acesso rápido para quem tem permissão --}}
+            @canany(['gerenciar-acessos', 'ver-auditoria'])
+                <section class="quick-actions" style="margin-top:0; margin-bottom:38px;">
+                    <div class="quick-header">
+                        <div>
+                            <h2>Administração</h2>
+                            <p>Ferramentas disponíveis para o seu perfil.</p>
+                        </div>
+                        <span class="quick-label">Acesso restrito</span>
+                    </div>
+
+                    <div class="quick-grid">
+                        @can('gerenciar-acessos')
+                            <a href="{{ route('convites.index') }}" class="quick-action">
+                                <span class="quick-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="9" cy="8" r="3"></circle>
+                                        <path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path>
+                                        <path d="M19 8v6"></path>
+                                        <path d="M16 11h6"></path>
+                                    </svg>
+                                </span>
+                                <span class="quick-text">
+                                    <strong>Acessos profissionais</strong>
+                                    <span>Convidar e gerenciar profissionais</span>
+                                </span>
+                                <span class="quick-arrow">&rarr;</span>
+                            </a>
+                        @endcan
+
+                        @can('ver-auditoria')
+                            <a href="{{ route('auditoria.index') }}" class="quick-action">
+                                <span class="quick-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z"></path>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </span>
+                                <span class="quick-text">
+                                    <strong>Auditoria e logs</strong>
+                                    <span>Eventos de segurança e integridade</span>
+                                </span>
+                                <span class="quick-arrow">&rarr;</span>
+                            </a>
+                        @endcan
+                    </div>
+                </section>
+            @endcanany
 
             {{-- PAINÉIS --}}
             <div class="panels">

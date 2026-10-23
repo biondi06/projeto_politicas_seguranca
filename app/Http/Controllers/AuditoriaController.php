@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditoriaLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Requisito 5.4 — análise dos logs de auditoria. Acesso restrito a
@@ -17,14 +18,16 @@ class AuditoriaController extends Controller
         'login' => 'login_%',
         '2fa'   => '2fa_%',
         'lgpd'  => 'lgpd_%',
+        'convite' => 'convite_%',
     ];
 
+    /**
+     * Quem pode ver a trilha de auditoria é definido num só lugar, o Gate
+     * "ver-auditoria" (AppServiceProvider), e não mais numa lista repetida aqui.
+     */
     private function autorizar(Request $request): void
     {
-        abort_unless(
-            in_array($request->user()->perfil, ['coordenador_clinico', 'administrador_ti'], true),
-            403
-        );
+        Gate::authorize('ver-auditoria');
     }
 
     public function index(Request $request)

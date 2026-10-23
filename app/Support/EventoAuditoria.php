@@ -19,6 +19,10 @@ class EventoAuditoria
         'lgpd_consentimento_revogado'     => 'Consentimento revogado',
         'lgpd_exportacao'                 => 'Exportação de dados',
         'lgpd_exclusao'                   => 'Exclusão de dados',
+        'convite_criado'                  => 'Convite de acesso criado',
+        'convite_usado'                   => 'Convite de acesso utilizado',
+        'convite_revogado'                => 'Convite de acesso revogado',
+        'administrador_inicial_criado'    => 'Administrador inicial criado',
     ];
 
     public static function rotulo(string $evento): string
@@ -30,9 +34,9 @@ class EventoAuditoria
     public static function classe(string $evento): string
     {
         return match (true) {
-            in_array($evento, ['login_sucesso', 'lgpd_consentimento_concedido'], true) => 'success',
+            in_array($evento, ['login_sucesso', 'lgpd_consentimento_concedido', 'convite_usado'], true) => 'success',
             str_contains($evento, 'falha') => 'danger',
-            in_array($evento, ['lgpd_consentimento_revogado', 'lgpd_exclusao', '2fa_reiniciado_segredo_invalido'], true) => 'warning',
+            in_array($evento, ['lgpd_consentimento_revogado', 'lgpd_exclusao', '2fa_reiniciado_segredo_invalido', 'convite_revogado'], true) => 'warning',
             default => 'neutral',
         };
     }

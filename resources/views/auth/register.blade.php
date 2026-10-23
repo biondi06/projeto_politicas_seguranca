@@ -18,10 +18,15 @@
     afirmativa do usuário, e fica registrado com data, versão e IP.
 --}}
 @php
-    // Versão do texto exibido abaixo. Deve ser a MESMA gravada em
-    // app/Actions/Fortify/CreateNewUser.php (campo versao_termo). Ao
-    // alterar o texto dos termos, atualize as duas.
-    $versaoTermo = 'v1.0';
+    // Versão do texto exibido abaixo. Vem de config/ecoa.php, a mesma fonte
+    // usada ao gravar o consentimento (CreateNewUser). Ao alterar o texto dos
+    // termos, altere a versão lá.
+    $versaoTermo = config('ecoa.termos_versao', 'v1.0');
+
+    // $convite é entregue pelo View Composer registrado no AppServiceProvider:
+    // é o convite válido do link (?convite=...) ou null no cadastro aberto.
+    $convite = $convite ?? null;
+    $tokenInformado = request('convite');
 @endphp
 <x-layouts.guest :title="'Criar conta — Ecoa'" :subtitle="'Crie sua conta de acesso'">
 
@@ -36,6 +41,26 @@
     <form method="POST" action="{{ route('register') }}" id="registerForm">
         @csrf
 
+        {{-- O PERFIL NÃO É ESCOLHIDO AQUI. Cadastro aberto cria "Responsável Legal";
+             conta profissional só nasce de um convite emitido por um administrador. --}}
+        @if ($convite)
+            <input type="hidden" name="convite" value="{{ $tokenInformado }}">
+            <div class="auth-alert success">
+                Você foi convidado(a) para criar uma conta de <strong>{{ $convite->perfil->rotulo() }}</strong>.
+                Use o e-mail do convite abaixo.
+            </div>
+        @elseif ($tokenInformado)
+            <div class="auth-alert error">
+                Este convite é inválido ou expirou. Peça um novo à administração do Ecoa.
+                O cadastro abaixo criaria uma conta de <strong>Responsável Legal</strong>.
+            </div>
+        @else
+            <div class="auth-form-text" style="margin-bottom:16px;">
+                Este cadastro cria uma conta de <strong>Responsável Legal</strong>.
+                Contas de profissionais são criadas por convite da administração.
+            </div>
+        @endif
+
         <div class="auth-form-group">
             <label for="name">Nome completo</label>
             <input id="name" type="text" name="name" value="{{ old('name') }}"
@@ -44,19 +69,8 @@
 
         <div class="auth-form-group">
             <label for="email">E-mail</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}"
-                   required autocomplete="username">
-        </div>
-
-        <div class="auth-form-group">
-            <label for="perfil">Perfil de acesso</label>
-            <select id="perfil" name="perfil" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option value="fonoaudiologo" {{ old('perfil') === 'fonoaudiologo' ? 'selected' : '' }}>Fonoaudiólogo</option>
-                <option value="coordenador_clinico" {{ old('perfil') === 'coordenador_clinico' ? 'selected' : '' }}>Coordenador Clínico</option>
-                <option value="administrador_ti" {{ old('perfil') === 'administrador_ti' ? 'selected' : '' }}>Administrador de TI</option>
-                <option value="responsavel_legal" {{ old('perfil') === 'responsavel_legal' ? 'selected' : '' }}>Responsável Legal</option>
-            </select>
+            <input id="email" type="email" name="email" value="{{ $convite ? $convite->email : old('email') }}"
+                   {{ $convite ? 'readonly' : '' }} required autocomplete="username">
         </div>
 
         <div class="auth-form-group">
@@ -141,7 +155,7 @@
 
             <h4>3. Cadastro, conta e responsabilidades</h4>
             <ul>
-                <li>Você deve informar dados verdadeiros e escolher o perfil de acesso que corresponde ao seu papel real.</li>
+                <li>Você deve informar dados verdadeiros. O perfil de acesso é definido pelo Ecoa: o cadastro aberto cria contas de Responsável Legal, e contas de profissionais são criadas por convite da administração.</li>
                 <li>A senha é pessoal e intransferível. Você é responsável pelo sigilo dela e por tudo que for feito com a sua conta.</li>
                 <li>Contas de perfil profissional (fonoaudiólogo, coordenador clínico e administrador de TI) devem ativar a <strong>verificação em duas etapas (2FA)</strong> para acessar o sistema.</li>
                 <li>Profissionais se comprometem a acessar apenas as informações necessárias ao atendimento das crianças sob seus cuidados.</li>
