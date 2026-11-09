@@ -117,15 +117,18 @@ jobs:
           nohup php artisan serve --host=127.0.0.1 --port=8000 > serve.log 2>&1 &
           # Espera a aplicação responder (até ~60 s) antes de liberar o ZAP.
           curl --silent --show-error --fail \
-               --retry 30 --retry-delay 2 --retry-connection-refused \
+               --retry 30 --retry-delay 2 --retry-connrefused \
                http://127.0.0.1:8000/ > /dev/null
           echo "Aplicação no ar."
 
       - name: Executar a varredura do OWASP ZAP
         id: zap
+        env:
+          # A entrada do workflow_dispatch chega por variável de ambiente, e não
+          # interpolada no script: evita injeção de comandos no runner.
+          MODO: ${{ inputs.zap_modo || 'baseline' }}
         run: |
           set -uo pipefail
-          MODO="${{ inputs.zap_modo || 'baseline' }}"
           if [ "$MODO" = "full" ]; then SCRIPT="zap-full-scan.py"; else SCRIPT="zap-baseline.py"; fi
 
           docker pull --quiet "$ZAP_IMAGE"
@@ -181,9 +184,10 @@ jobs:
 
       # ----- BLOQUEIO: equivale ao "fail_action" do ZAP, mas por nível de risco -----
       - name: Bloquear o build se o ZAP achar falha de risco alto
+        env:
+          CODIGO: ${{ steps.zap.outputs.codigo }}
         run: |
           set -euo pipefail
-          CODIGO="${{ steps.zap.outputs.codigo }}"
 
           if [ "$CODIGO" != "0" ] && [ "$CODIGO" != "2" ]; then
             echo "::error::O ZAP terminou com código $CODIGO (falha na varredura ou regra marcada como FAIL)."
@@ -314,8 +318,9 @@ jobs:
 
       # ----- BLOQUEIO: exit-code 1 do Bearer para achados críticos ou altos -----
       - name: Bloquear o build se o Bearer achar falha crítica ou alta
+        env:
+          CODIGO: ${{ steps.seguranca.outputs.codigo }}
         run: |
-          CODIGO="${{ steps.seguranca.outputs.codigo }}"
           if [ "$CODIGO" != "0" ]; then
             echo "::error::O Bearer terminou com código $CODIGO: há achado crítico/alto de segurança ou privacidade (ou falha na análise). Build bloqueado."
             exit 1
