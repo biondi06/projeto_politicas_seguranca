@@ -222,8 +222,10 @@ jobs:
       BEARER_SHA256: '974d4ad7bb71bc578675684d444e345e8fbad91c85557aac035406ef5cc04c68'
       # Commit exato do repositório oficial de regras (github.com/Bearer/bearer-rules).
       BEARER_RULES_COMMIT: '82c335f781a61a6d8b052394f84fd1d93edec467'
-      # Pastas que não são código da aplicação.
-      BEARER_IGNORAR: 'tests/**,vendor/**,node_modules/**,storage/**,public/build/**'
+      # Pastas que não são código da aplicação. As de tradução (lang) só têm texto
+      # exibido ao usuário; a regra de "segredo no código" confunde a chave 'password'
+      # de uma mensagem de erro com uma senha (falso positivo).
+      BEARER_IGNORAR: 'tests/**,vendor/**,node_modules/**,storage/**,public/build/**,resources/lang/**,lang/**'
 
     steps:
       - name: Baixar o código
