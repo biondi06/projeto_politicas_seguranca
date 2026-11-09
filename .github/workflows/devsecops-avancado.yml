@@ -1,0 +1,402 @@
+# =============================================================================
+# DevSecOps Avançado — ECOA
+#
+# Três verificações independentes, todas com ferramentas gratuitas e de código aberto:
+#
+#   1. DAST  — OWASP ZAP varre a aplicação EM EXECUÇÃO (subida no próprio runner).
+#   2. Privacidade — Bearer procura vazamento de dados pessoais (PII) no código.
+#   3. SBOM  — Trivy gera o inventário de dependências em CycloneDX (sbom.json).
+#
+# BLOQUEIO DO BUILD (o job falha com exit 1):
+#   - ZAP: se houver alerta de risco ALTO (o mais alto do ZAP).
+#   - Bearer: se houver achado de severidade CRÍTICA ou ALTA.
+#   - SBOM: se o arquivo não for gerado ou vier vazio/inválido.
+#
+# SEGURANÇA DA PRÓPRIA ESTEIRA (cadeia de suprimentos):
+#   - Toda action de terceiros é fixada pelo hash do commit, não por tag. Tags
+#     podem ser reapontadas: em março de 2026 isso aconteceu com a trivy-action.
+#   - Bearer e Trivy são baixados numa versão exata e conferidos por SHA-256.
+#   - As regras do Bearer vêm de um commit exato do repositório oficial.
+# =============================================================================
+
+name: DevSecOps Avançado (DAST, Privacidade e SBOM)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      zap_modo:
+        description: 'Modo do OWASP ZAP (baseline = passivo e rápido; full = ativo, com ataques)'
+        type: choice
+        options:
+          - baseline
+          - full
+        default: baseline
+
+# Permissão mínima: as jobs só leem o repositório.
+permissions:
+  contents: read
+
+# Uma nova execução na mesma branch cancela a anterior que ainda está rodando.
+concurrency:
+  group: devsecops-avancado-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ===========================================================================
+  # 1. DAST — OWASP ZAP contra a aplicação rodando em localhost
+  # ===========================================================================
+  dast-zap:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      # Imagem oficial do ZAP, mantida pela comunidade OWASP/ZAP (open source).
+      ZAP_IMAGE: ghcr.io/zaproxy/zaproxy:stable
+      # Menor nível de risco que BLOQUEIA o build. No ZAP: 3 = Alto, 2 = Médio, 1 = Baixo.
+      ZAP_BLOQUEIA_A_PARTIR_DE: '3'
+
+      # A aplicação roda num ambiente descartável do runner: banco SQLite temporário,
+      # chave gerada na hora e nenhum segredo real. Variáveis de ambiente reais
+      # têm prioridade sobre o arquivo .env.
+      APP_ENV: local
+      APP_DEBUG: 'false'
+      APP_URL: http://127.0.0.1:8000
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ${{ github.workspace }}/database/dast.sqlite
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      MAIL_MAILER: log
+      HASH_DRIVER: argon2id
+      PHP_CLI_SERVER_WORKERS: '4'
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Instalar PHP 8.4
+        uses: shivammathur/setup-php@4424c9aab975b57bd706ee5a39c6b4334d6e4f60 # 2.40.0
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_sqlite, sqlite3, bcmath, intl, zip, xml, ctype, fileinfo, openssl, tokenizer
+          coverage: none
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Instalar dependências e compilar os assets
+        run: |
+          set -euo pipefail
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci
+          npm run build
+
+      - name: Preparar a aplicação (banco temporário e chave gerada na hora)
+        run: |
+          set -euo pipefail
+          touch database/dast.sqlite
+          # Uma única chave, descartável: vale para a migração (abaixo) e, pelo
+          # GITHUB_ENV, para os passos seguintes (inclusive o servidor).
+          APP_KEY="$(php artisan key:generate --show)"
+          export APP_KEY
+          echo "APP_KEY=${APP_KEY}" >> "$GITHUB_ENV"
+          php artisan migrate --force
+
+      - name: Subir a aplicação em localhost:8000
+        run: |
+          set -euo pipefail
+          nohup php artisan serve --host=127.0.0.1 --port=8000 > serve.log 2>&1 &
+          # Espera a aplicação responder (até ~60 s) antes de liberar o ZAP.
+          curl --silent --show-error --fail \
+               --retry 30 --retry-delay 2 --retry-connection-refused \
+               http://127.0.0.1:8000/ > /dev/null
+          echo "Aplicação no ar."
+
+      - name: Executar a varredura do OWASP ZAP
+        id: zap
+        run: |
+          set -uo pipefail
+          MODO="${{ inputs.zap_modo || 'baseline' }}"
+          if [ "$MODO" = "full" ]; then SCRIPT="zap-full-scan.py"; else SCRIPT="zap-baseline.py"; fi
+
+          docker pull --quiet "$ZAP_IMAGE"
+          # Registra o digest da imagem usada, para a execução ser auditável.
+          echo "Imagem do ZAP: $(docker image inspect --format '{{index .RepoDigests 0}}' "$ZAP_IMAGE")"
+
+          mkdir -p zap-reports
+          chmod 777 zap-reports
+
+          # --network host: o contêiner do ZAP enxerga o localhost do runner.
+          # -I: não falha só por avisos; quem decide o bloqueio é a etapa seguinte,
+          #     por nível de risco, lendo o relatório JSON.
+          set +e
+          docker run --rm --network host \
+            -v "${GITHUB_WORKSPACE}/zap-reports:/zap/wrk:rw" \
+            "$ZAP_IMAGE" \
+            "$SCRIPT" -t http://127.0.0.1:8000 \
+            -r zap-relatorio.html -J zap-relatorio.json -w zap-relatorio.md \
+            -m 2 -I
+          CODIGO=$?
+          set -e
+
+          echo "Modo: $MODO | código de saída do ZAP: $CODIGO"
+          echo "codigo=$CODIGO" >> "$GITHUB_OUTPUT"
+
+      - name: Resumo dos alertas do ZAP
+        if: always()
+        run: |
+          if [ -f zap-reports/zap-relatorio.json ]; then
+            {
+              echo "## OWASP ZAP — alertas encontrados"
+              echo
+              echo "| Risco | Alerta | Ocorrências |"
+              echo "|---|---|---|"
+              jq -r 'def risco: {"3":"Alto","2":"Médio","1":"Baixo","0":"Informativo"}[.];
+                     [.site[]?.alerts[]?] | sort_by(-(.riskcode|tonumber))[]
+                     | "| \(.riskcode|risco) | \(.name) | \(.count) |"' zap-reports/zap-relatorio.json
+              echo
+              echo "Bloqueio a partir do nível de risco: **${ZAP_BLOQUEIA_A_PARTIR_DE}** (3 = Alto)."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "O relatório do ZAP não foi gerado." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publicar os relatórios do ZAP
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: relatorio-zap
+          path: zap-reports/
+          if-no-files-found: warn
+          retention-days: 30
+
+      # ----- BLOQUEIO: equivale ao "fail_action" do ZAP, mas por nível de risco -----
+      - name: Bloquear o build se o ZAP achar falha de risco alto
+        run: |
+          set -euo pipefail
+          CODIGO="${{ steps.zap.outputs.codigo }}"
+
+          if [ "$CODIGO" != "0" ] && [ "$CODIGO" != "2" ]; then
+            echo "::error::O ZAP terminou com código $CODIGO (falha na varredura ou regra marcada como FAIL)."
+            tail -n 30 serve.log || true
+            exit 1
+          fi
+
+          if [ ! -f zap-reports/zap-relatorio.json ]; then
+            echo "::error::O relatório JSON do ZAP não foi gerado."
+            exit 1
+          fi
+
+          BLOQUEANTES=$(jq "[.site[]?.alerts[]? | select((.riskcode|tonumber) >= ${ZAP_BLOQUEIA_A_PARTIR_DE})] | length" zap-reports/zap-relatorio.json)
+          echo "Alertas que bloqueiam (risco >= ${ZAP_BLOQUEIA_A_PARTIR_DE}): ${BLOQUEANTES}"
+
+          if [ "$BLOQUEANTES" -gt 0 ]; then
+            echo "::error::O OWASP ZAP encontrou ${BLOQUEANTES} alerta(s) de risco alto. Build bloqueado."
+            exit 1
+          fi
+
+  # ===========================================================================
+  # 2. Privacidade e dados sensíveis — Bearer
+  # ===========================================================================
+  privacidade-bearer:
+    name: Privacidade e LGPD (Bearer)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      # Versão e SHA-256 conferem com o checksums.txt oficial do release v2.1.3.
+      BEARER_VERSION: '2.1.3'
+      BEARER_SHA256: '974d4ad7bb71bc578675684d444e345e8fbad91c85557aac035406ef5cc04c68'
+      # Commit exato do repositório oficial de regras (github.com/Bearer/bearer-rules).
+      BEARER_RULES_COMMIT: '82c335f781a61a6d8b052394f84fd1d93edec467'
+      # Pastas que não são código da aplicação.
+      BEARER_IGNORAR: 'tests/**,vendor/**,node_modules/**,storage/**,public/build/**'
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Instalar o Bearer (versão fixa, SHA-256 conferido)
+        run: |
+          set -euo pipefail
+          curl -sSfL -o bearer.tgz \
+            "https://github.com/Bearer/bearer/releases/download/v${BEARER_VERSION}/bearer_${BEARER_VERSION}_linux_amd64.tar.gz"
+          echo "${BEARER_SHA256}  bearer.tgz" | sha256sum --check --strict -
+          tar -xzf bearer.tgz bearer
+          sudo install -m 0755 bearer /usr/local/bin/bearer
+          bearer version
+
+      - name: Baixar as regras do Bearer (commit fixo)
+        run: |
+          set -euo pipefail
+          # Fora do repositório analisado, para o Bearer não escanear os próprios
+          # arquivos de teste das regras.
+          mkdir "${RUNNER_TEMP}/bearer-rules"
+          cd "${RUNNER_TEMP}/bearer-rules"
+          git init --quiet
+          git remote add origin https://github.com/Bearer/bearer-rules.git
+          git fetch --depth 1 --quiet origin "${BEARER_RULES_COMMIT}"
+          git checkout --quiet FETCH_HEAD
+          echo "Regras do commit: $(git rev-parse HEAD)"
+
+      - name: Bearer — achados de segurança e vazamento de dados pessoais
+        id: seguranca
+        run: |
+          set -uo pipefail
+          # --severity critical,high : só esses níveis entram no relatório...
+          # --exit-code 1            : ...e qualquer achado neles faz o comando sair com 1.
+          set +e
+          bearer scan . \
+            --external-rule-dir "${RUNNER_TEMP}/bearer-rules/rules" --disable-default-rules \
+            --disable-version-check --quiet --skip-path "${BEARER_IGNORAR}" \
+            --severity critical,high --exit-code 1 \
+            --format json --output bearer-seguranca.json
+          CODIGO=$?
+          set -e
+          echo "Código de saída do Bearer: $CODIGO"
+          echo "codigo=$CODIGO" >> "$GITHUB_OUTPUT"
+
+      - name: Bearer — relatório legível e inventário de privacidade (não bloqueia)
+        if: always()
+        run: |
+          set -uo pipefail
+          bearer scan . \
+            --external-rule-dir "${RUNNER_TEMP}/bearer-rules/rules" --disable-default-rules \
+            --disable-version-check --quiet --skip-path "${BEARER_IGNORAR}" \
+            --severity critical,high,medium,low,warning --exit-code 0 \
+            --format html --output bearer-seguranca.html || true
+          bearer scan . \
+            --external-rule-dir "${RUNNER_TEMP}/bearer-rules/rules" --disable-default-rules \
+            --disable-version-check --quiet --skip-path "${BEARER_IGNORAR}" \
+            --report privacy --exit-code 0 \
+            --format html --output bearer-privacidade.html || true
+
+      - name: Resumo dos achados do Bearer
+        if: always()
+        run: |
+          {
+            echo "## Bearer — achados de segurança e privacidade"
+            echo
+            if [ -f bearer-seguranca.json ]; then
+              echo "| Severidade | Regra | Arquivo |"
+              echo "|---|---|---|"
+              TOTAL=$(jq '[.critical[]?, .high[]?] | length' bearer-seguranca.json)
+              jq -r '[(.critical[]? | .severity = "crítica"), (.high[]? | .severity = "alta")][]
+                     | "| \(.severity) | \(.id) | \(.filename):\(.line_number) |"' bearer-seguranca.json
+              if [ "$TOTAL" = "0" ]; then
+                echo "| — | Nenhum achado crítico ou alto | — |"
+              fi
+            else
+              echo "O relatório do Bearer não foi gerado."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar os relatórios do Bearer
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: relatorio-bearer
+          path: |
+            bearer-seguranca.json
+            bearer-seguranca.html
+            bearer-privacidade.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      # ----- BLOQUEIO: exit-code 1 do Bearer para achados críticos ou altos -----
+      - name: Bloquear o build se o Bearer achar falha crítica ou alta
+        run: |
+          CODIGO="${{ steps.seguranca.outputs.codigo }}"
+          if [ "$CODIGO" != "0" ]; then
+            echo "::error::O Bearer terminou com código $CODIGO: há achado crítico/alto de segurança ou privacidade (ou falha na análise). Build bloqueado."
+            exit 1
+          fi
+          echo "Bearer sem achados críticos ou altos."
+
+  # ===========================================================================
+  # 3. Cadeia de suprimentos — SBOM CycloneDX com Trivy
+  # ===========================================================================
+  sbom-trivy:
+    name: SBOM CycloneDX (Trivy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      # Versão e SHA-256 conferem com o trivy_0.76.1_checksums.txt oficial.
+      TRIVY_VERSION: '0.76.1'
+      TRIVY_SHA256: 'c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0'
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Instalar o Trivy (versão fixa, SHA-256 conferido)
+        run: |
+          set -euo pipefail
+          curl -sSfL -o trivy.tgz \
+            "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          echo "${TRIVY_SHA256}  trivy.tgz" | sha256sum --check --strict -
+          tar -xzf trivy.tgz trivy
+          sudo install -m 0755 trivy /usr/local/bin/trivy
+          trivy --version
+
+      - name: Gerar o SBOM em CycloneDX
+        run: |
+          set -euo pipefail
+          # Lê composer.lock e package-lock.json (não precisa instalar nada).
+          # --scanners license : inventário puro, sem depender do banco de vulnerabilidades
+          #                      (as CVEs ficam a cargo do job de SCA do outro workflow).
+          # --include-dev-deps : o package-lock do projeto só tem dependências de build (Vite).
+          trivy fs \
+            --format cyclonedx \
+            --scanners license \
+            --include-dev-deps \
+            --skip-db-update --skip-version-check \
+            --output sbom.json \
+            .
+
+      - name: Validar o SBOM
+        run: |
+          set -euo pipefail
+          jq -e '.bomFormat == "CycloneDX"' sbom.json > /dev/null \
+            || { echo "::error::sbom.json não está no formato CycloneDX."; exit 1; }
+
+          TOTAL=$(jq '[.components[]? | select(.type == "library")] | length' sbom.json)
+          COMPOSER=$(jq '[.components[]? | select((.purl // "") | startswith("pkg:composer/"))] | length' sbom.json)
+          NPM=$(jq '[.components[]? | select((.purl // "") | startswith("pkg:npm/"))] | length' sbom.json)
+
+          {
+            echo "## SBOM CycloneDX (Trivy)"
+            echo
+            echo "| Item | Quantidade |"
+            echo "|---|---|"
+            echo "| Versão da especificação | $(jq -r '.specVersion' sbom.json) |"
+            echo "| Bibliotecas listadas | ${TOTAL} |"
+            echo "| Pacotes PHP (Composer) | ${COMPOSER} |"
+            echo "| Pacotes JavaScript (npm) | ${NPM} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "Bibliotecas: ${TOTAL} (Composer: ${COMPOSER}, npm: ${NPM})"
+
+          # BLOQUEIO: um SBOM vazio não prova nada.
+          if [ "$TOTAL" -eq 0 ] || [ "$COMPOSER" -eq 0 ]; then
+            echo "::error::O SBOM não lista as dependências do projeto. Build bloqueado."
+            exit 1
+          fi
+
+      - name: Publicar o SBOM como artefato
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sbom-cyclonedx
+          path: sbom.json
+          if-no-files-found: error
+          retention-days: 90

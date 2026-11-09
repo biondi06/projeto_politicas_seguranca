@@ -154,6 +154,8 @@ class LgpdController extends Controller
         // A exclusão é irreversível: exige a senha atual.
         $request->validate(
             ['password' => ['required', 'current_password']],
+            // bearer:disable php_lang_hardcoded_secret
+            // Falso positivo: são textos de mensagens de erro, não uma senha.
             [
                 'password.required' => 'Informe a sua senha para confirmar a exclusão.',
                 'password.current_password' => 'A senha informada está incorreta.',
