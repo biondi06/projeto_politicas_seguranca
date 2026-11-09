@@ -269,6 +269,17 @@ jobs:
           echo "Código de saída do Bearer: $CODIGO"
           echo "codigo=$CODIGO" >> "$GITHUB_OUTPUT"
 
+      - name: Bearer — mostrar os achados no log
+        if: always()
+        run: |
+          set -uo pipefail
+          # Mesmo escopo do passo que bloqueia, mas imprime regra, arquivo, linha e
+          # trecho de código no próprio log (e "0 findings" quando está tudo certo).
+          bearer scan . \
+            --external-rule-dir "${RUNNER_TEMP}/bearer-rules/rules" --disable-default-rules \
+            --disable-version-check --quiet --skip-path "${BEARER_IGNORAR}" \
+            --severity critical,high --exit-code 0
+
       - name: Bearer — relatório legível e inventário de privacidade (não bloqueia)
         if: always()
         run: |
