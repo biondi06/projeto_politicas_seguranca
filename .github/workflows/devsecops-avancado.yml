@@ -333,6 +333,12 @@ jobs:
           CODIGO: ${{ steps.seguranca.outputs.codigo }}
         run: |
           if [ "$CODIGO" != "0" ]; then
+            # Mostra aqui, no próprio passo que bloqueia, qual regra e qual arquivo
+            # causaram o bloqueio.
+            bearer scan . \
+              --external-rule-dir "${RUNNER_TEMP}/bearer-rules/rules" --disable-default-rules \
+              --disable-version-check --quiet --skip-path "${BEARER_IGNORAR}" \
+              --severity critical,high --exit-code 0 || true
             echo "::error::O Bearer terminou com código $CODIGO: há achado crítico/alto de segurança ou privacidade (ou falha na análise). Build bloqueado."
             exit 1
           fi
