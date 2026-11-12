@@ -1,0 +1,45 @@
+# Detectores personalizados do TruffleHog para o ECOA.
+#
+# Por que existem: os detectores padrão do TruffleHog procuram credenciais de
+# provedores conhecidos (AWS, GitHub, Stripe...) e as VALIDAM junto ao provedor.
+# A APP_KEY do Laravel (a chave AES-256 que criptografa os dados clínicos) e as
+# senhas de banco ou de e-mail não pertencem a nenhum provedor, então nunca seriam
+# reportadas. Estes detectores cobrem esse caso (item 3.6 do Requisitos 1: chaves
+# criptográficas protegidas).
+#
+# Como usar: o workflow passa --config .trufflehog/detectors.yml e
+# --results=verified,unverified,unknown, porque esses segredos não podem ser
+# "verificados" e, sem isso, seriam descartados.
+
+detectors:
+
+  # Chave de aplicação do Laravel: "base64:" seguido de 16 ou 32 bytes em base64.
+  - name: LaravelAppKey
+    keywords:
+      - APP_KEY
+    regex:
+      chave: 'APP_KEY\s*=\s*"?(base64:[A-Za-z0-9+/]{22,43}={0,2})'
+
+  # Senhas e segredos atribuídos a variáveis de ambiente (arquivo .env commitado).
+  - name: EnvSenhaOuSegredo
+    keywords:
+      - DB_PASSWORD
+      - MAIL_PASSWORD
+      - REDIS_PASSWORD
+      - AWS_SECRET_ACCESS_KEY
+      - ADMIN_INICIAL_SENHA
+    regex:
+      segredo: '(?:DB_PASSWORD|MAIL_PASSWORD|REDIS_PASSWORD|AWS_SECRET_ACCESS_KEY|ADMIN_INICIAL_SENHA)\s*=\s*["'']?([^\s"''#$]{8,})'
+    # Textos de exemplo comuns em documentação não contam como segredo.
+    exclude_words:
+      - senha
+      - password
+      - secret
+      - exemplo
+      - example
+      - sua_
+      - your
+      - change
+      - aqui
+      - placeholder
+      - xxxx

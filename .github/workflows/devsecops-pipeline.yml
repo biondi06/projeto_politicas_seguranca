@@ -25,7 +25,9 @@ jobs:
         uses: trufflesecurity/trufflehog@ea68ca03c865c5f324e86e849ced20ed3cf9dbbb # v3.99.8
         with:
           path: ./
-          extra_args: --only-verified
+          # Detectores próprios (APP_KEY, senhas de .env) em .trufflehog/detectors.yml.
+          # --results inclui segredos "não verificáveis", que são justamente esses.
+          extra_args: --config .trufflehog/detectors.yml --results=verified,unverified,unknown
 
   # ============================================================
   # 2. Análise de Vulnerabilidades em Dependências (SCA) — checa
