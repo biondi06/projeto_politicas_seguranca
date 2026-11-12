@@ -107,6 +107,10 @@
                 <h2>Dados da conta</h2>
                 <p class="lgpd-lead">Informações cadastrais associadas ao seu acesso.</p>
 
+                <div class="lgpd-card-actions">
+                    <a href="{{ route('lgpd.corrigir') }}" class="lgpd-btn secondary lgpd-btn-small">Corrigir meus dados</a>
+                </div>
+
                 <dl class="lgpd-dl single" style="margin-bottom:0;">
                     <div>
                         <dt>Nome</dt>
@@ -145,6 +149,14 @@
 
             <div class="lgpd-right">
                 <div>
+                    <h3>Corrigir meus dados</h3>
+                    <p>Atualize o seu nome e o seu e-mail quando estiverem incorretos ou desatualizados (art. 18, III, da LGPD). A correção fica registrada na trilha de auditoria.</p>
+                </div>
+                <a href="{{ route('lgpd.corrigir') }}" class="lgpd-btn secondary">Corrigir dados</a>
+            </div>
+
+            <div class="lgpd-right">
+                <div>
                     <h3>Exportar meus dados</h3>
                     <p>Baixe uma cópia dos seus dados em um arquivo de texto (.txt): dados da conta e histórico de consentimentos. Senhas e segredos de autenticação nunca são incluídos.</p>
                 </div>
@@ -160,7 +172,7 @@
             </div>
 
             <p class="lgpd-note">
-                Para outros direitos previstos no art. 18 da LGPD, como correção de dados ou informação sobre compartilhamento,
+                Para outros direitos previstos no art. 18 da LGPD, como informação sobre compartilhamento ou a correção de dados que não podem ser editados aqui,
                 escreva para <strong>fonoaudiologiaecoa@gmail.com</strong>.
             </p>
         </section>

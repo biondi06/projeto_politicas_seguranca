@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\ConviteAcessoController;
+use App\Http\Controllers\CorrecaoDadosController;
 use App\Http\Controllers\LgpdController;
 use App\Http\Controllers\SecurityController;
 
@@ -53,6 +54,15 @@ Route::middleware(['auth', 'two_factor_required'])->group(function () {
             ->name('security.index');
         Route::get('/meus-dados', [LgpdController::class, 'meusDados'])
             ->name('lgpd.meus-dados');
+        // Direito de correção (art. 18, III): o titular corrige o próprio nome e e-mail.
+        // Fica fora de "consent_active": corrigir dados não depende de consentimento.
+        Route::get('/meus-dados/corrigir', [CorrecaoDadosController::class, 'edit'])
+            ->name('lgpd.corrigir');
+        // throttle: quem tem a sessão de outra pessoa não consegue adivinhar a senha
+        // atual (exigida para trocar o e-mail) por tentativa e erro.
+        Route::patch('/meus-dados/corrigir', [CorrecaoDadosController::class, 'update'])
+            ->middleware('throttle:6,1')
+            ->name('lgpd.corrigir.salvar');
         Route::get('/meus-dados/exportar', [LgpdController::class, 'exportar'])
             ->name('lgpd.exportar');
         Route::post('/meus-dados/consentir', [LgpdController::class, 'consentir'])

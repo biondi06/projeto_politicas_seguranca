@@ -122,7 +122,7 @@
             <button type="button" class="tos-close" id="tosClose" aria-label="Fechar os termos">&times;</button>
         </div>
 
-        <div class="tos-body" id="tosBody" tabindex="0">
+        <div class="tos-body" id="tosBody" tabindex="0" autofocus>
 
             <div class="tos-summary">
                 <strong>Resumo em linguagem simples</strong>
@@ -175,29 +175,29 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Nome, e-mail, senha (armazenada apenas como hash) e perfil de acesso</td>
-                            <td>Autenticação e controle de permissões</td>
-                            <td>Consentimento; execução do serviço</td>
+                            <td data-label="Dado">Nome, e-mail, senha (armazenada apenas como hash) e perfil de acesso</td>
+                            <td data-label="Finalidade">Autenticação e controle de permissões</td>
+                            <td data-label="Base legal">Consentimento; execução do serviço</td>
                         </tr>
                         <tr>
-                            <td>Nome, contato e e-mail do responsável legal</td>
-                            <td>Vínculo com a criança e comunicação sobre o atendimento</td>
-                            <td>Consentimento</td>
+                            <td data-label="Dado">Nome, contato e e-mail do responsável legal</td>
+                            <td data-label="Finalidade">Vínculo com a criança e comunicação sobre o atendimento</td>
+                            <td data-label="Base legal">Consentimento</td>
                         </tr>
                         <tr>
-                            <td>Nome e data de nascimento da criança</td>
-                            <td>Identificação do paciente acompanhado</td>
-                            <td>Consentimento do responsável legal (art. 14)</td>
+                            <td data-label="Dado">Nome e data de nascimento da criança</td>
+                            <td data-label="Finalidade">Identificação do paciente acompanhado</td>
+                            <td data-label="Base legal">Consentimento do responsável legal (art. 14)</td>
                         </tr>
                         <tr>
-                            <td>Tipo de dificuldade, fonemas-alvo, metas, comentários e observações de evolução (dados de saúde)</td>
-                            <td>Acompanhamento fonoaudiológico</td>
-                            <td>Consentimento e tutela da saúde (art. 11)</td>
+                            <td data-label="Dado">Tipo de dificuldade, fonemas-alvo, metas, comentários e observações de evolução (dados de saúde)</td>
+                            <td data-label="Finalidade">Acompanhamento fonoaudiológico</td>
+                            <td data-label="Base legal">Consentimento e tutela da saúde (art. 11)</td>
                         </tr>
                         <tr>
-                            <td>Endereço IP, data e hora de acessos, falhas de login e registros de consentimento</td>
-                            <td>Segurança, auditoria e comprovação do consentimento</td>
-                            <td>Consentimento; legítimo interesse em segurança</td>
+                            <td data-label="Dado">Endereço IP, data e hora de acessos, falhas de login e registros de consentimento</td>
+                            <td data-label="Finalidade">Segurança, auditoria e comprovação do consentimento</td>
+                            <td data-label="Base legal">Consentimento; legítimo interesse em segurança</td>
                         </tr>
                     </tbody>
                 </table>

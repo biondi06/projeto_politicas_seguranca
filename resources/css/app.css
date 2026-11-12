@@ -2819,3 +2819,658 @@ footer {
 }
 
 .convite-acoes form { margin: 0; }
+
+/* =========================================================
+   CELULAR E ADMINISTRAÇÃO
+   1. Termos de uso (cadastro) no celular
+   2. Barra superior e painel das telas internas
+   3. Cabeçalho, cartões e chips das páginas administrativas
+   4. Auditoria e logs
+   5. Acessos profissionais (convites)
+   6. Tabelas que viram cartões no celular
+   7. Corrigir meus dados (LGPD, art. 18, III)
+========================================================= */
+
+/* ---------------------------------------------------------
+   1. TERMOS DE USO NO CELULAR
+--------------------------------------------------------- */
+
+/* O link dos termos é um <button>: sem isto ele vira uma caixa centralizada
+   que quebra o texto da frase ao meio. Aqui ele passa a correr como texto. */
+.terms-link-btn {
+    display: inline;
+    font-family: inherit;
+    line-height: inherit;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* O anel de foco só aparece para quem usa o teclado. */
+.tos-close:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+@media (max-width: 680px) {
+    .consent-row { gap: 12px; }
+
+    .consent-row input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        margin-top: 0;
+        flex-shrink: 0;
+    }
+
+    .consent-row label { font-size: 14px; line-height: 1.55; }
+    .consent-hint { margin-left: 34px; font-size: 12px; }
+
+    .tos-dialog {
+        max-width: 100vw;
+        max-height: 100dvh;
+    }
+
+    /* Cabeçalho e rodapé ficam compactos: sobra mais espaço para ler. */
+    .tos-header {
+        align-items: center;
+        gap: 10px;
+        padding: 10px 8px 10px 16px;
+    }
+
+    .tos-header h3 { font-size: 17px; line-height: 1.25; }
+    .tos-meta { margin-top: 3px; font-size: 10px; }
+
+    .tos-close {
+        width: 44px;
+        height: 44px;
+    }
+
+    .tos-body { padding: 16px 16px 8px; }
+    .tos-body h4 { font-size: 16px; }
+    .tos-summary { padding: 14px; margin-bottom: 20px; }
+
+    .tos-footer {
+        padding: 10px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .tos-scroll-hint { margin-bottom: 8px; font-size: 12px; }
+    .tos-accept { padding: 14px 16px; font-size: 15px; }
+
+    /* A tabela de dados e finalidades vira uma lista de cartões, sem rolagem
+       lateral dentro do modal. Os rótulos vêm do atributo data-label. */
+    .tos-table-wrap {
+        margin: 10px 0 14px;
+        overflow: visible;
+        border: 0;
+    }
+
+    .tos-table { min-width: 0; }
+
+    .tos-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .tos-table,
+    .tos-table tbody,
+    .tos-table tr,
+    .tos-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .tos-table tr {
+        margin-bottom: 10px;
+        padding: 10px 14px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+    }
+
+    .tos-table td {
+        padding: 5px 0;
+        border: 0;
+        font-size: 13px;
+    }
+
+    .tos-table td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 1px;
+        color: var(--muted);
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+}
+
+/* Telas baixas (celular pequeno ou deitado): a linha de versão sai para dar espaço. */
+@media (max-width: 400px), (max-height: 620px) {
+    .tos-meta { display: none; }
+}
+
+/* ---------------------------------------------------------
+   2. BARRA SUPERIOR E PAINEL DAS TELAS INTERNAS
+--------------------------------------------------------- */
+
+.internal-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding: 10px 0;
+}
+
+/* A navegação rola de lado em vez de quebrar em várias linhas. */
+.internal-topbar .internal-topbar-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.internal-topbar .internal-topbar-nav::-webkit-scrollbar { display: none; }
+
+.internal-topbar .internal-topbar-nav a {
+    flex: 0 0 auto;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.internal-topbar-logout {
+    flex-shrink: 0;
+    min-height: 40px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+@media (max-width: 680px) {
+    .internal-panel {
+        margin: 14px auto 28px;
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .internal-panel h4 { font-size: 21px; }
+
+    .lgpd-page { padding-top: 20px; padding-bottom: 40px; }
+    .lgpd-header h1 { font-size: 27px; }
+    .lgpd-card { padding: 18px 16px; }
+
+    .lgpd-btn { min-height: 44px; }
+    .lgpd-right .lgpd-btn { width: 100%; }
+}
+
+/* ---------------------------------------------------------
+   3. CABEÇALHO, CARTÕES E CHIPS DAS PÁGINAS ADMINISTRATIVAS
+--------------------------------------------------------- */
+
+.admin-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    margin-bottom: 22px;
+}
+
+.admin-head > div { flex: 1 1 320px; min-width: 0; }
+.admin-head h4 { margin-bottom: 4px; }
+
+.admin-head p {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.admin-card {
+    margin-bottom: 26px;
+    padding: 18px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.admin-card > h6 { margin-bottom: 14px; }
+
+.admin-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 18px;
+}
+
+.admin-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.admin-chip strong { color: var(--ink); font-size: 13px; }
+
+.admin-section { margin-bottom: 28px; }
+.admin-section:last-child { margin-bottom: 0; }
+
+.admin-note {
+    margin-top: 12px;
+    color: var(--muted-light);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+@media (max-width: 680px) {
+    .admin-card { padding: 16px 14px; }
+}
+
+/* ---------------------------------------------------------
+   4. AUDITORIA E LOGS
+--------------------------------------------------------- */
+
+.audit-integrity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+    margin-bottom: 26px;
+    padding: 16px 18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.audit-integrity > div { flex: 1 1 280px; min-width: 0; }
+
+.audit-integrity strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--ink);
+    font-size: 14px;
+}
+
+.audit-integrity .audit-hint { display: block; line-height: 1.5; }
+
+.audit-integrity form { margin: 0; }
+.audit-integrity .btn-ecoa { width: auto; padding: 11px 22px; }
+
+.audit-filters select,
+.audit-filters input[type="text"] { min-height: 42px; }
+
+.audit-filters .btn-outline { width: auto; min-height: 42px; padding: 9px 18px; }
+
+.audit-pager-nav { display: flex; gap: 8px; }
+
+.cell-mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.cell-empty { color: var(--muted); }
+
+@media (max-width: 860px) {
+    .audit-stats.four { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 680px) {
+    /* Os quatro indicadores ficam em 2 colunas compactas, em vez de uma pilha longa. */
+    .audit-stats.four { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 22px; }
+
+    .audit-stat-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .audit-stat-value { font-size: 24px; }
+
+    .audit-integrity { padding: 14px; }
+    .audit-integrity .btn-ecoa { width: 100%; }
+
+    .audit-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .audit-filters > div { width: 100%; }
+
+    .audit-filters select,
+    .audit-filters input[type="text"] {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    .audit-filters .btn-outline { width: 100%; }
+    .audit-filters .audit-page-btn { text-align: center; padding: 11px 14px; }
+
+    .audit-pager {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .audit-pager-nav { display: grid; grid-template-columns: 1fr 1fr; }
+    .audit-page-btn { text-align: center; padding: 11px 14px; }
+}
+
+@media (max-width: 380px) {
+    .audit-stat-value { font-size: 22px; }
+    .audit-stat-label { font-size: 11px; }
+}
+
+/* ---------------------------------------------------------
+   5. ACESSOS PROFISSIONAIS (CONVITES)
+--------------------------------------------------------- */
+
+.invite-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: end;
+}
+
+.invite-form label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.invite-form input,
+.invite-form select {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 12px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.invite-form .btn-ecoa {
+    width: auto;
+    min-height: 42px;
+    padding: 10px 22px;
+}
+
+.invite-link {
+    margin: 0 0 26px;
+    padding: 16px 18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+}
+
+.invite-link strong {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--ink);
+    font-size: 13.5px;
+    overflow-wrap: anywhere;
+}
+
+.invite-link-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.invite-link-row input {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 10px 12px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+}
+
+.invite-link p { margin: 10px 0 0; }
+
+.convite-acoes { display: flex; justify-content: flex-end; gap: 8px; }
+.convite-acoes form { margin: 0; }
+.convite-acoes .lgpd-btn { padding: 7px 14px; }
+
+@media (max-width: 760px) {
+    .invite-form { grid-template-columns: 1fr; }
+    .invite-form .btn-ecoa { width: 100%; }
+
+    .invite-form input,
+    .invite-form select { font-size: 16px; }
+}
+
+@media (max-width: 520px) {
+    .invite-link-row .lgpd-btn { width: 100%; }
+}
+
+/* ---------------------------------------------------------
+   6. TABELAS QUE VIRAM CARTÕES NO CELULAR
+   Use class="table-cards" na tabela e data-label em cada <td>.
+   Classes de célula: cell-title (cabeça do cartão), cell-actions
+   (botões em linha própria) e cell-empty (mensagem de lista vazia).
+--------------------------------------------------------- */
+
+@media (max-width: 720px) {
+    .table-cards thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .table-cards,
+    .table-cards tbody,
+    .table-cards tr,
+    .table-cards td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-cards { margin-bottom: 0; }
+
+    .table-cards tr {
+        margin-bottom: 10px;
+        padding: 10px 14px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+    }
+
+    .table-cards td {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 7px 0;
+        border: 0;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .table-cards td + td { border-top: 1px dashed var(--line); }
+
+    .table-cards td::before {
+        content: attr(data-label);
+        flex: 0 0 26%;
+        color: var(--muted);
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .table-cards td:not([data-label])::before { content: none; }
+
+    .table-cards td.cell-title {
+        display: block;
+        padding: 2px 0 9px;
+        text-align: left;
+    }
+
+    .table-cards td.cell-title::before { content: none; }
+
+    .table-cards td.cell-actions {
+        display: block;
+        padding-top: 12px;
+    }
+
+    .table-cards td.cell-actions::before { content: none; }
+    .table-cards .convite-acoes { justify-content: stretch; }
+    .table-cards .convite-acoes form { flex: 1; }
+    .table-cards .convite-acoes .lgpd-btn { width: 100%; min-height: 42px; }
+
+    .table-cards td.cell-empty {
+        display: block;
+        text-align: left;
+    }
+}
+
+/* ---------------------------------------------------------
+   7. CORRIGIR MEUS DADOS (LGPD, art. 18, III)
+--------------------------------------------------------- */
+
+.lgpd-card-actions { margin: -6px 0 16px; }
+
+.lgpd-btn-small {
+    padding: 8px 14px;
+    font-size: 12.5px;
+}
+
+.lgpd-form { display: grid; gap: 18px; }
+
+.lgpd-field label,
+.lgpd-field-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.lgpd-field input[type="text"],
+.lgpd-field input[type="email"],
+.lgpd-field input[type="password"] {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 14px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 16px; /* 16px evita o zoom automático do iPhone ao tocar no campo */
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.lgpd-field input:focus {
+    outline: none;
+    background: var(--white);
+    border-color: var(--teal-600);
+    box-shadow: 0 0 0 3px rgba(27, 94, 90, .12);
+}
+
+.lgpd-field input[aria-invalid="true"] { border-color: var(--danger); }
+
+.lgpd-field-help {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.lgpd-readonly {
+    padding: 11px 14px;
+    background: var(--paper);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 14px;
+}
+
+.lgpd-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 4px;
+}
+
+.lgpd-points {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lgpd-points li {
+    position: relative;
+    padding-left: 16px;
+    color: #3a443e;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.lgpd-points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: .65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+}
+
+.lgpd-points strong { color: var(--ink); }
+
+@media (max-width: 680px) {
+    .lgpd-form-actions { flex-direction: column-reverse; }
+    .lgpd-form-actions .lgpd-btn { width: 100%; }
+}
+
+/* ---------------------------------------------------------
+   AJUSTES FINAIS
+--------------------------------------------------------- */
+
+/* Em telas de toque o foco inicial do modal vai para a área de leitura (para o
+   teclado e os leitores de tela), mas sem a moldura, que só atrapalha. */
+@media (hover: none) {
+    .tos-body:focus-visible { outline: none; }
+}
+
+/* Os valores das células ocupam a largura que sobra ao lado do rótulo. */
+@media (max-width: 720px) {
+    .table-cards td > * { min-width: 0; }
+    .table-cards td { word-break: normal; }
+}
+
+/* Navegação do topo: no celular os nomes ficam curtos para caber sem rolar. */
+@media (max-width: 520px) {
+    .so-desktop { display: none; }
+    .internal-topbar .internal-topbar-nav a { padding-left: 11px; padding-right: 11px; }
+}

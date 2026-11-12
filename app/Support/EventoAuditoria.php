@@ -19,6 +19,7 @@ class EventoAuditoria
         'lgpd_consentimento_revogado'     => 'Consentimento revogado',
         'lgpd_exportacao'                 => 'Exportação de dados',
         'lgpd_exclusao'                   => 'Exclusão de dados',
+        'lgpd_dados_corrigidos'           => 'Dados pessoais corrigidos',
         'convite_criado'                  => 'Convite de acesso criado',
         'convite_usado'                   => 'Convite de acesso utilizado',
         'convite_revogado'                => 'Convite de acesso revogado',
